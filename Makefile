@@ -7,7 +7,8 @@ BINARY				= ircserv
 SRCS				= main.cpp\
 						Channel.cpp\
 						Client.cpp\
-						Server.cpp
+						Server.cpp\
+						Parser.cpp
 
 MK					= Makefile
 
