@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -10,6 +11,36 @@
 
 int nArrClient[CLIENTS_MAX_ALLOW];
 fd_set fr, fw, fe;
+int nMaxFd;
+
+void processNewMessage(int nClientScoket)
+{
+	std::cout << "Processing new message from client socket " << nClientScoket << std::endl;
+	char buff[257] = {
+		0,
+	};
+	int nRet = recv(nClientScoket, buff, 256, 0);
+	if (nRet < 0)
+	{
+		std::cout << "Something wrong happened! Closing the connection for client" << nClientScoket << std::endl;
+		close(nClientScoket);
+		for (int nIndex = 0; nIndex < CLIENTS_MAX_ALLOW; nIndex++)
+		{
+			if (nArrClient[nIndex] == nClientScoket)
+			{
+				nArrClient[nIndex] = 0;
+				std::cout << "Disconnected client" << std::endl;
+				break;
+			}
+		}
+	}
+	else
+	{
+		std::cout << "The message received from the client is: " << buff;
+		send(nClientScoket, "Processed your request", 23, 0);
+		std::cout << "*******************************************************" << std::endl;
+	}
+}
 
 void processTheNewRequest(int sockFd)
 {
@@ -25,6 +56,9 @@ void processTheNewRequest(int sockFd)
 				if (nArrClient[nIndex] == 0)
 				{
 					nArrClient[nIndex] = nClientSocket;
+					if (nClientSocket > nMaxFd)
+						nMaxFd = nClientSocket;
+					std::cout << "New client connected" << std::endl;
 					send(nClientSocket, "Connection done successfully!", 30, 0);
 					break;
 				}
@@ -35,15 +69,19 @@ void processTheNewRequest(int sockFd)
 				std::cout << "No space for a new connection" << std::endl;
 			}
 		}
-		else
+	}
+	else
+	{
+		for (int nIndex = 0; nIndex < CLIENTS_MAX_ALLOW; nIndex++)
 		{
-			// for (int nIndex = 0; nIndex < 5; nIndex++)
-			// {
-			// 	if
-			// }
+			if (FD_ISSET(nArrClient[nIndex], &fr))
+			{
+				std::cout << "Got a message!" << std::endl;
+				processNewMessage(nArrClient[nIndex]);
+			}
 		}
-	};
-}
+	}
+};
 
 int main(int argc, char **argv)
 {
@@ -52,7 +90,6 @@ int main(int argc, char **argv)
 
 	// initialize the socket
 	struct sockaddr_in srvAddress;
-	int nMaxFd;
 	int nRet = 0;
 
 	int sockFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -146,6 +183,7 @@ int main(int argc, char **argv)
 		{
 			if (nArrClient[nIndex] != 0)
 			{
+				// std::cout << nMaxFd << " | " << nArrClient[nIndex] << std::endl;
 				FD_SET(nArrClient[nIndex], &fr);
 				FD_SET(nArrClient[nIndex], &fe);
 			}
@@ -154,13 +192,12 @@ int main(int argc, char **argv)
 		nRet = select(nMaxFd + 1, &fr, &fw, &fe, &timeOut);
 		if (nRet > 0)
 		{
-			std::cout << nRet << "are ready to read" << std::endl;
 			// When someone connects or communicates over a dedicated connection
 			processTheNewRequest(sockFd);
 		}
 		else if (nRet == 0)
 		{
-			std::cout << "Nothing on port " << PORT << std::endl;
+			// std::cout << "Nothing on port " << PORT << std::endl;
 		}
 		else
 		{
