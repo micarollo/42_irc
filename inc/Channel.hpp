@@ -2,6 +2,7 @@
 #define __CHANNEL_HPP__
 
 // Libraries
+#include <iostream>
 #include <map>
 
 // Classes
