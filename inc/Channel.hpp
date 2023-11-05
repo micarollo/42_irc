@@ -23,7 +23,7 @@ private:
 	// Attributes
 	std::map<std::string, Client *> _users;
 	std::map<std::string, Client *> _operators;
-	int _userLimit;
+	// int _userLimit;
 };
 
 #endif
