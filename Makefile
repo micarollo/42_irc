@@ -8,7 +8,8 @@ SRCS				= main.cpp\
 						Channel.cpp\
 						Client.cpp\
 						Server.cpp\
-						Parser.cpp
+						Parser.cpp\
+						Message.cpp
 
 MK					= Makefile
 
