@@ -1,10 +1,17 @@
 #ifndef __CLIENT_HPP__
 #define __CLIENT_HPP__
 
+// Libraries
+#include <iostream>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
 class Client
 {
 public:
 	// Constructors and Destructors
+	Client(int fd, sockaddr_in addr);
 	~Client(void);
 
 private:
@@ -15,8 +22,9 @@ private:
 
 	// Attributes
 	int _fd;
-	int _nickName;
-	int _userName;
+	std::string _hostname;
+	std::string _nickName;
+	std::string _userName;
 };
 
 #endif
