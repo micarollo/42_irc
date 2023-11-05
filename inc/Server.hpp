@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include <istream>
 #include <map>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
 
 // Classes
 #include "Client.hpp"
@@ -24,6 +29,49 @@ public:
 	// Methods
 	void run(void);
 
+	// Exceptions
+	class SocketNotOpen : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class FlagsNotFetched : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class InvalidNonBlocking : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class InvalidBind : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class InvalidListen : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class InvalidSelect : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class InvalidAccept : public std::exception
+	{
+	public:
+		virtual const char *what() const throw();
+	};
+
 private:
 	// Cannonical Form
 	Server(void);
@@ -35,12 +83,15 @@ private:
 	void openSocket(void);
 	void bindAndListen(void);
 
-	void listenForConnections(void);
-	void processConnections(void);
+	void waitAndProcessConnections(void);
+	void prepareFdSets(void);
+	void processConnections(int nRet);
 	void processNewClient(void);
 	void processNewMessages(void);
 	void processOneMessage(int fd);
 	void executeOneMessage(Message const &msg);
+
+	void deleteClients(void);
 
 	// Methods : execution
 	void join(Message const &msg);
@@ -48,9 +99,11 @@ private:
 	// Attributes
 	int _port;
 	int _srvSocket;
-	fd_set fr, fw, fe;
+	int _maxFdConnected;
+	fd_set _fr, _fw, _fe;
+	struct timeval _timeOut;
 	std::string _srvPassword;
-	std::map<std::string, Client *> _clients;
+	std::map<int, Client *> _clients;
 	std::map<std::string, Channel *> _channels;
 };
 
