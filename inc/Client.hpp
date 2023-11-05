@@ -4,11 +4,19 @@
 class Client
 {
 public:
+	// Constructors and Destructors
+	~Client(void);
+
 private:
+	// Cannonical Form
 	Client(void);
 	Client(const Client &src);
-	~Client(void);
 	Client &operator=(const Client &rhs);
+
+	// Attributes
+	int _fd;
+	int _nickName;
+	int _userName;
 };
 
 #endif
