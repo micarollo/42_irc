@@ -9,6 +9,10 @@
 // Classes
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "Message.hpp"
+
+// Macros
+#include "Macros.hpp"
 
 class Server
 {
@@ -25,6 +29,21 @@ private:
 	Server(void);
 	Server(const Server &src);
 	Server &operator=(const Server &rhs);
+
+	// Methods
+	void initializeServer(void);
+	void openSocket(void);
+	void bindAndListen(void);
+
+	void listenForConnections(void);
+	void processConnections(void);
+	void processNewClient(void);
+	void processNewMessages(void);
+	void processOneMessage(int fd);
+	void executeOneMessage(Message const &msg);
+
+	// Methods : execution
+	void join(Message const &msg);
 
 	// Attributes
 	int _port;
