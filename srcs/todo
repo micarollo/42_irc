@@ -1,0 +1,7 @@
+- inet_addr("127.0.0.1")
+- tv struct
+- Messages
+- fail exit code/structure
+- when exception is thrown does call detructors of classes?
+- when failing to accept new client connection should shut down all the program?
+- handle _fe
