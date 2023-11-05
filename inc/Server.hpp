@@ -4,6 +4,11 @@
 // Libraries
 #include <stdlib.h>
 #include <istream>
+#include <map>
+
+// Classes
+#include "Client.hpp"
+#include "Channel.hpp"
 
 class Server
 {
@@ -23,7 +28,11 @@ private:
 
 	// Attributes
 	int _port;
+	int _srvSocket;
+	fd_set fr, fw, fe;
 	std::string _srvPassword;
+	std::map<std::string, Client *> _clients;
+	std::map<std::string, Channel *> _channels;
 };
 
 #endif
