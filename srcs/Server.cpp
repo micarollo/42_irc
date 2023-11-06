@@ -50,17 +50,6 @@ void Server::initializeServer(void)
 	return;
 }
 
-void checkError(int toCheck, std::exception &exception)
-{
-	if (toCheck < 0)
-		throw exception;
-}
-
-void printMessage(std::string msg)
-{
-	std::cout << msg << std::endl;
-}
-
 void Server::openSocket(void)
 {
 
@@ -68,21 +57,15 @@ void Server::openSocket(void)
 	_timeOut.tv_usec = 0;
 
 	_srvSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	SocketNotOpen socketException;
-	checkError(_srvSocket, socketException);
-	printMessage("Succesfully open socket");
+	ErrorHandling::checkErrorPrintSuccess(_srvSocket, "Socket could not open", "Succesfully open socket");
 
 	_maxFdConnected = _srvSocket;
 
 	int currSockFlags = fcntl(_srvSocket, F_GETFL, 0);
-	FlagsNotFetched flagsNotFetched;
-	checkError(currSockFlags, flagsNotFetched);
-	printMessage("Successfully got current socket flags");
+	ErrorHandling::checkErrorPrintSuccess(currSockFlags, "Could not fetch server socket flags", "Successfully got current socket flags");
 
 	int nRet = fcntl(_srvSocket, F_SETFL, currSockFlags | O_NONBLOCK);
-	InvalidNonBlocking invalidNonBlocking;
-	checkError(nRet, invalidNonBlocking);
-	printMessage("Successfully made socket non-blocking");
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Could not make server socket non-blocking", "Successfully made socket non-blocking");
 }
 
 void Server::bindAndListen(void)
@@ -95,14 +78,10 @@ void Server::bindAndListen(void)
 	memset(&srvAddr.sin_zero, 0, 0);
 
 	int nRet = bind(_srvSocket, (sockaddr *)&srvAddr, sizeof(sockaddr));
-	InvalidBind invalidBind;
-	checkError(nRet, invalidBind);
-	printMessage("Successfully bind to local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to bind", "Successfully bind to local port " + std::to_string(_port));
 
 	nRet = listen(_srvSocket, MAX_NB_CLIENTS);
-	InvalidListen invalidListen;
-	checkError(nRet, invalidListen);
-	printMessage("Successfully listen at local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + std::to_string(_port));
 }
 
 void Server::waitAndProcessConnections(void)
@@ -138,7 +117,7 @@ void Server::processConnections(int nRet)
 			processNewMessages();
 	}
 	else if (nRet < 0)
-		throw InvalidSelect();
+		throw std::runtime_error("Fail on select function call");
 	return;
 }
 
@@ -148,8 +127,7 @@ void Server::processNewClient(void)
 	socklen_t clientAddrLen = sizeof(clientAddr);
 
 	int clientSocket = accept(_srvSocket, (sockaddr *)&clientAddr, &clientAddrLen);
-	InvalidAccept invalidAccept;
-	checkError(clientSocket, invalidAccept);
+	ErrorHandling::checkError(clientSocket, "Failed to accept new client connection");
 
 	if (_clients.size() < MAX_NB_CLIENTS)
 	{
@@ -172,42 +150,41 @@ void Server::processNewClient(void)
 
 void Server::processNewMessages(void)
 {
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	std::map<int, Client *>::iterator it = _clients.begin();
+	std::map<int, Client *>::iterator nextIt;
+
+	while (it != _clients.end())
 	{
+		nextIt = std::next(it);
 		if (FD_ISSET(it->first, &_fr))
 			processOneMessage(it->first);
+		it = nextIt;
 	}
+
 	return;
 }
 
-void Server::processOneMessage(int fd)
+void Server::processOneMessage(int clientFd)
 {
-	// std::cout << "Processing new message from client socket " << fd << std::endl;
-	// char buff[257] = {
-	// 	0,
-	// };
-	// int nRet = recv(nClientScoket, buff, 256, 0);
-	// if (nRet < 0)
-	// {
-	// 	std::cout << "Something wrong happened! Closing the connection for client" << nClientScoket << std::endl;
-	// 	close(nClientScoket);
-	// 	for (int nIndex = 0; nIndex < CLIENTS_MAX_ALLOW; nIndex++)
-	// 	{
-	// 		if (nArrClient[nIndex] == nClientScoket)
-	// 		{
-	// 			nArrClient[nIndex] = 0;
-	// 			std::cout << "Disconnected client" << std::endl;
-	// 			break;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	std::cout << "The message received from the client is: " << buff;
-	// 	send(nClientScoket, "Processed your request", 23, 0);
-	// 	std::cout << "*******************************************************" << std::endl;
-	// }
-	(void)fd;
+	std::cout << "Processing new message from client socket " << clientFd << std::endl;
+	char buff[257] = {
+		0,
+	};
+	int nRet = recv(clientFd, buff, 256, 0);
+	if (nRet < 0)
+	{
+		std::cout << "Something wrong happened! Closing the connection for client" << clientFd << std::endl;
+		close(clientFd);
+		delete _clients[clientFd];
+		_clients.erase(clientFd);
+	}
+	else
+	{
+		std::cout << "The message received from the client is: " << buff;
+		send(clientFd, "Processed your request", 23, 0);
+		std::cout << "*******************************************************" << std::endl;
+	}
+	// (void)fd;
 	try
 	{
 		Message msg("test placeholder");
@@ -253,40 +230,4 @@ void Server::deleteClients(void)
 			it->second = NULL;
 		}
 	}
-}
-
-// Exceptions
-const char *Server::SocketNotOpen::what() const throw()
-{
-	return ("Socket could not open");
-}
-
-const char *Server::FlagsNotFetched::what() const throw()
-{
-	return ("Could not fetch server socket flags");
-}
-
-const char *Server::InvalidNonBlocking::what() const throw()
-{
-	return ("Could not make server socket non-blocking");
-}
-
-const char *Server::InvalidBind::what() const throw()
-{
-	return ("Failed to bind");
-}
-
-const char *Server::InvalidListen::what() const throw()
-{
-	return ("Failed to listen");
-}
-
-const char *Server::InvalidSelect::what() const throw()
-{
-	return ("Failed to listen");
-}
-
-const char *Server::InvalidAccept::what() const throw()
-{
-	return ("Failed to accept new client connection");
 }
