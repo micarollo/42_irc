@@ -136,12 +136,12 @@ void Server::processNewClient(void)
 			_maxFdConnected = clientSocket;
 
 		std::cout << "New client connected" << std::endl;
-		send(clientSocket, "Connection done successfully!", 30, 0);
+		srvSend(clientSocket, "Connection done successfully!");
 	}
 	else
 	{
 		std::cout << "Client tried to connect but max number of clients reached" << std::endl;
-		send(clientSocket, "Server is full, not allowing new connections", 45, 0);
+		srvSend(clientSocket, "Server is full, not allowing new connections");
 		close(clientSocket);
 	}
 
@@ -167,24 +167,45 @@ void Server::processNewMessages(void)
 void Server::processOneMessage(int clientFd)
 {
 	std::cout << "Processing new message from client socket " << clientFd << std::endl;
-	char buff[257] = {
-		0,
-	};
-	int nRet = recv(clientFd, buff, 256, 0);
-	if (nRet < 0)
+	char buff[BUFFER_SIZE];
+
+	std::string newLine;
+	int searchStart = 0;
+	while (newLine.find("\r\n", searchStart) == std::string::npos)
 	{
-		std::cout << "Something wrong happened! Closing the connection for client" << clientFd << std::endl;
-		close(clientFd);
-		delete _clients[clientFd];
-		_clients.erase(clientFd);
+		int nRet = recv(clientFd, buff, BUFFER_SIZE, 0);
+		if (nRet < 0)
+		{
+			std::cout << "Something wrong happened! Closing the connection for client" << clientFd << std::endl;
+			close(clientFd);
+			delete _clients[clientFd];
+			_clients.erase(clientFd);
+			break;
+		}
+		else
+		{
+			// std::cout << "Message received from client: " << buff;
+			// srvSend(clientFd, "Processed your request");
+			newLine += std::string(buff);
+			std::cout << "Message received from client: <"
+					  << newLine << ">" << std::endl;
+			std::cout << "*******************************************************" << std::endl;
+
+			// int tempSearch = newLine.find("\r\n", searchStart);
+			// if (newLine.find("\r\n", searchStart))
+			// {
+			// }
+		}
 	}
-	else
+
+	/*While (!newLine.find("\r\n"))
 	{
-		std::cout << "The message received from the client is: " << buff;
-		send(clientFd, "Processed your request", 23, 0);
-		std::cout << "*******************************************************" << std::endl;
+		int recv;
+
+		if ()
 	}
-	// (void)fd;
+
+	*/
 	try
 	{
 		Message msg("test placeholder");
@@ -230,4 +251,10 @@ void Server::deleteClients(void)
 			it->second = NULL;
 		}
 	}
+}
+
+// Utils
+void Server::srvSend(int fd, std::string msg)
+{
+	send(fd, "Server is full, not allowing new connections", msg.length(), 0);
 }

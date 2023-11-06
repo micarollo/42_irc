@@ -51,6 +51,8 @@ private:
 
 	void deleteClients(void);
 
+	void srvSend(int fd, std::string msg);
+
 	// Methods : execution
 	void join(Message const &msg);
 
