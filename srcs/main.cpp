@@ -7,11 +7,6 @@
 
 // Macros
 
-void print_error(std::string msg)
-{
-	std::cout << msg << std::endl;
-}
-
 int main(int argc, char **argv)
 {
 	try
