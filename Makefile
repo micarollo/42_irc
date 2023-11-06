@@ -9,7 +9,8 @@ SRCS				= main.cpp\
 						Client.cpp\
 						Server.cpp\
 						Parser.cpp\
-						Message.cpp
+						Message.cpp\
+						ErrorHandling.cpp
 
 MK					= Makefile
 
