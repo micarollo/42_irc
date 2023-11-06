@@ -32,13 +32,13 @@ Parser &Parser::operator=(const Parser &rhs)
 bool Parser::parseArguments() const
 {
 	if (_argc != 3)
-		throw Parser::InvalidNbArgs();
+		throw std::runtime_error("Invalid number of arguments - format should be ./ircserv <port> <password>");
 
 	if (!parsePort())
-		throw Parser::InvalidPort();
+		throw std::runtime_error("Port must be a valid int");
 
 	if (!parsePassword())
-		throw Parser::InvalidPassword();
+		throw std::runtime_error("Invalid password");
 
 	return true;
 }
@@ -55,20 +55,4 @@ bool Parser::parsePassword() const
 	if (!_argv)
 		return false;
 	return true;
-}
-
-// Exceptions
-const char *Parser::InvalidPort::what() const throw()
-{
-	return ("Port must be a valid int");
-}
-
-const char *Parser::InvalidPassword::what() const throw()
-{
-	return ("Port must be a valid int");
-}
-
-const char *Parser::InvalidNbArgs::what() const throw()
-{
-	return ("Invalid number of arguments - format should be ./ircserv <port> <password>");
 }
