@@ -5,3 +5,4 @@
 - when exception is thrown does call detructors of classes?
 - when failing to accept new client connection should shut down all the program?
 - handle _fe
+- protect close
