@@ -5,7 +5,7 @@
 
 // Classes
 #include "Server.hpp"
-#include "Message.hpp"
+#include "Command.hpp"
 
 // Macros
 #include "Macros.hpp"
@@ -16,19 +16,19 @@ class Executor
 {
 public:
 	// Constructors and Destructiors
-	Executor(Server *srv);
+	Executor(Server *srv, Command const *cmd);
 	~Executor(void);
 
 	// Methods
-	void pass(Message const &msg);
-	void nick(Message const &msg);
-	void user(Message const &msg);
-	void privmsg(Message const &msg);
-	void join(Message const &msg);
-	void kick(Message const &msg);
-	void invite(Message const &msg);
-	void topic(Message const &msg);
-	void mode(Message const &msg);
+	void pass();
+	void nick();
+	void user();
+	void privmsg();
+	void join();
+	void kick();
+	void invite();
+	void topic();
+	void mode();
 
 private:
 	// Cannonical Form
@@ -41,6 +41,7 @@ private:
 
 	// Attributes
 	Server *_srv;
+	Command *_cmd;
 };
 
 #endif

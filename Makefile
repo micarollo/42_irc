@@ -9,7 +9,7 @@ SRCS				= main.cpp\
 						Client.cpp\
 						Server.cpp\
 						Parser.cpp\
-						Message.cpp\
+						Command.cpp\
 						Executor.cpp\
 						ErrorHandling.cpp
 

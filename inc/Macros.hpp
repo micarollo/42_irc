@@ -5,6 +5,7 @@
 #define REGISTERED 2
 
 // Reply Codes
+#define ERR_SERVERFULL 403
 #define ERR_NEEDMOREPARAMS 461
 #define ERR_ALREADYREGISTRED 462
 

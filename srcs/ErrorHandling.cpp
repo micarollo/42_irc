@@ -22,7 +22,8 @@ std::string ErrorHandling::prepareMsg(int replyCode, Server *srv, std::string cm
 		return ":" + srv->getName() + " " + std::to_string(replyCode) + " " + nickName + " " + cmd + ":Not enough parameters";
 	case ERR_ALREADYREGISTRED:
 		return ":" + srv->getName() + " " + std::to_string(replyCode) + " " + nickName + " " + cmd + ":You may not reregister";
-
+	case ERR_SERVERFULL:
+		return ":" + srv->getName() + " " + std::to_string(replyCode) + " * :Server is full - try again later";
 	default:
 		break;
 	}

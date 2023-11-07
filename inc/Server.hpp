@@ -14,7 +14,7 @@
 // Classes
 #include "Client.hpp"
 #include "Channel.hpp"
-#include "Message.hpp"
+#include "Command.hpp"
 #include "ErrorHandling.hpp"
 #include "Executor.hpp"
 
@@ -54,7 +54,7 @@ private:
 	void processOneMessage(int fd);
 	std::string readOneMessage(int clientFd);
 	void processCommands(std::string oneMsg, int clientFd);
-	void executeOneMessage(Message const &msg);
+	void executeOneCommand(Command &cmd);
 
 	void deleteClients(void);
 	void disconnectOneClient(int clientFd);
@@ -62,11 +62,13 @@ private:
 	// Attributes
 	std::string _name;
 	int _port;
+	std::string _srvPassword;
+
 	int _srvSocket;
 	int _maxFdConnected;
 	fd_set _fr, _fw, _fe;
 	struct timeval _timeOut;
-	std::string _srvPassword;
+
 	std::map<int, Client *> _clients;
 	std::map<std::string, Channel *> _channels;
 };

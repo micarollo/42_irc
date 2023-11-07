@@ -1,5 +1,5 @@
-#ifndef __MESSAGE_HPP__
-#define __MESSAGE_HPP__
+#ifndef __COMMAND_HPP__
+#define __COMMAND_HPP__
 
 // Libraries
 #include <iostream>
@@ -8,12 +8,12 @@
 // Classes
 #include "Client.hpp"
 
-class Message
+class Command
 {
 public:
 	// Constructors and Destructors
-	Message(std::string msg, Client *clientExec);
-	~Message(void);
+	Command(std::string msg, Client *clientExec);
+	~Command(void);
 
 	// Getters
 	int const &getCommand(void) const;
@@ -22,13 +22,13 @@ public:
 	Client *const &getClientExec(void) const;
 
 	// Methods
-	void parseMessage(std::string const &msg);
+	void parseCommand(std::string const &msg);
 
 private:
 	// Cannonical Form
-	Message(void);
-	Message(const Message &src);
-	Message &operator=(const Message &rhs);
+	Command(void);
+	Command(const Command &src);
+	Command &operator=(const Command &rhs);
 
 	// Attributes
 	int _command;

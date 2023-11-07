@@ -81,7 +81,7 @@ void Server::bindAndListen(void)
 
 	srvAddr.sin_family = AF_INET;
 	srvAddr.sin_port = htons(_port);
-	srvAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	srvAddr.sin_addr.s_addr = INADDR_ANY;
 	memset(&srvAddr.sin_zero, 0, 0);
 
 	int nRet = bind(_srvSocket, (sockaddr *)&srvAddr, sizeof(sockaddr));
@@ -143,12 +143,12 @@ void Server::processNewClient(void)
 			_maxFdConnected = clientSocket;
 
 		std::cout << "New client connected" << std::endl;
-		srvSend(clientSocket, "Connection done successfully!");
 	}
 	else
 	{
 		std::cout << "Client tried to connect but max number of clients reached" << std::endl;
-		srvSend(clientSocket, "Server is full, not allowing new connections");
+		std::string replyMsg = ErrorHandling::prepareMsg(ERR_SERVERFULL, this, "", "");
+		srvSend(clientSocket, replyMsg);
 		close(clientSocket);
 	}
 
@@ -174,7 +174,7 @@ void Server::processNewMessages(void)
 void Server::processOneMessage(int clientFd)
 {
 	std::string oneMsg = readOneMessage(clientFd);
-	std::cout << "Got a message from client " << _clients[clientFd]->getUserName() << std::endl;
+	std::cout << "Got a message from client " << _clients[clientFd]->getNickName() << std::endl;
 	processCommands(oneMsg, clientFd);
 
 	return;
@@ -216,12 +216,12 @@ void Server::processCommands(std::string oneMsg, int clientFd)
 	{
 		try
 		{
-			Message msg(command, _clients[clientFd]);
+			Command cmd(command, _clients[clientFd]);
 
 			// tmp
 			std::cout << "Executing <" << command << ">" << std::endl;
 
-			executeOneMessage(msg);
+			executeOneCommand(cmd);
 		}
 		catch (const std::exception &e)
 		{
@@ -232,65 +232,65 @@ void Server::processCommands(std::string oneMsg, int clientFd)
 	}
 }
 
-void Server::executeOneMessage(Message const &msg)
+void Server::executeOneCommand(Command &cmd)
 {
 
-	Executor executor(this);
+	Executor executor(this, &cmd);
 
-	switch (msg.getCommand())
+	switch (cmd.getCommand())
 	{
 	case (CAP):
 		break;
 	case (PASS):
 	{
-		executor.pass(msg);
+		executor.pass();
 		break;
 	}
 	case (NICK):
 	{
-		executor.nick(msg);
+		executor.nick();
 		break;
 	}
 	case (USER):
 	{
-		executor.user(msg);
+		executor.user();
 		break;
 	}
 	case (PRIVMSG):
 	{
-		executor.privmsg(msg);
+		executor.privmsg();
 		break;
 	}
 	case (JOIN):
 	{
-		executor.join(msg);
+		executor.join();
 		break;
 	}
 	case (KICK):
 	{
-		executor.kick(msg);
+		executor.kick();
 		break;
 	}
 	case (INVITE):
 	{
-		executor.invite(msg);
+		executor.invite();
 		break;
 	}
 	case (TOPIC):
 	{
-		executor.topic(msg);
+		executor.topic();
 		break;
 	}
 	case (MODE):
 	{
-		executor.mode(msg);
+		executor.mode();
 		break;
 	}
 	default:
 	{
 		// tmp
 		std::cout << "Command not implemented" << std::endl;
-		srvSend(msg.getClientExec()->getFd(), "Command <" + msg.getCommandStr() + "> not implemented");
+		srvSend(cmd.getClientExec()->getFd(), "Command <" + cmd.getCommandStr() + "> not implemented");
 	}
 	}
 	return;
@@ -311,17 +311,17 @@ void Server::deleteClients(void)
 
 void Server::disconnectOneClient(int clientFd)
 {
-	std::string username = _clients[clientFd]->getUserName();
+	std::string nickName = _clients[clientFd]->getNickName();
 
 	// tmp
-	std::cout << "Something wrong happened! Closing the connection for client " << username << std::endl;
+	std::cout << "Something wrong happened! Closing the connection for client " << nickName << std::endl;
 
 	close(clientFd);
 	delete _clients[clientFd];
 	_clients.erase(clientFd);
 
 	// tmp
-	std::cout << "Disconnected client " << username << std::endl;
+	std::cout << "Disconnected client " << nickName << std::endl;
 }
 
 // Utils

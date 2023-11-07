@@ -3,7 +3,7 @@
 // Constructors
 Executor::Executor(void) {}
 
-Executor::Executor(Server *srv) : _srv(srv) {}
+Executor::Executor(Server *srv, Command *cmd) : _srv(srv), _cmd(cmd) {}
 
 Executor::Executor(const Executor &src)
 {
@@ -31,28 +31,28 @@ Server *const &Executor::getSrv() const
 }
 
 // Methods
-void Executor::pass(Message const &msg)
+void Executor::pass()
 {
-	if (msg.getParams().size() == 0)
+	if (_cmd->getParams().size() == 0)
 	{
-		std::string replyMsg = ErrorHandling::prepareMsg(ERR_NEEDMOREPARAMS, _srv, msg.getCommandStr(), msg.getClientExec()->getNickName());
-		_srv->srvSend(msg.getClientExec()->getFd(), replyMsg);
+		std::string replyMsg = ErrorHandling::prepareMsg(ERR_NEEDMOREPARAMS, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		_srv->srvSend(_cmd->getClientExec()->getFd(), replyMsg);
 		return;
 	}
 	// tmp What if is more than 1? We can choose what is the behaviour
 
-	if (msg.getClientExec()->getStatus() == PRE_REGISTER)
-		msg.getClientExec()->setPassword(msg.getParams().front());
+	if (_cmd->getClientExec()->getStatus() == PRE_REGISTER)
+		_cmd->getClientExec()->setPassword(_cmd->getParams().front());
 	else
 	{
-		std::string replyMsg = ErrorHandling::prepareMsg(ERR_ALREADYREGISTRED, _srv, msg.getCommandStr(), msg.getClientExec()->getNickName());
-		_srv->srvSend(msg.getClientExec()->getFd(), replyMsg);
+		std::string replyMsg = ErrorHandling::prepareMsg(ERR_ALREADYREGISTRED, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		_srv->srvSend(_cmd->getClientExec()->getFd(), replyMsg);
 	}
 
 	return;
 }
 
-void Executor::nick(Message const &msg)
+void Executor::nick()
 {
 	// Chekc if args = 1
 	//  if (nickname not valid)
@@ -74,50 +74,42 @@ void Executor::nick(Message const &msg)
 	//		else
 	// 			464     ERR_PASSWDMISMATCH
 
-	(void)msg;
 	return;
 }
 
-void Executor::user(Message const &msg)
+void Executor::user()
 {
-	(void)msg;
 	// 464     ERR_PASSWDMISMATCH when attempting to register later
 
 	return;
 }
 
-void Executor::privmsg(Message const &msg)
+void Executor::privmsg()
 {
-	(void)msg;
 	return;
 }
 
-void Executor::join(Message const &msg)
+void Executor::join()
 {
-	(void)msg;
 	return;
 }
 
-void Executor::kick(Message const &msg)
+void Executor::kick()
 {
-	(void)msg;
 	return;
 }
 
-void Executor::invite(Message const &msg)
+void Executor::invite()
 {
-	(void)msg;
 	return;
 }
 
-void Executor::topic(Message const &msg)
+void Executor::topic()
 {
-	(void)msg;
 	return;
 }
 
-void Executor::mode(Message const &msg)
+void Executor::mode()
 {
-	(void)msg;
 	return;
 }
