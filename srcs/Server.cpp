@@ -50,17 +50,6 @@ void Server::initializeServer(void)
 	return;
 }
 
-void checkError(int toCheck, std::exception &exception)
-{
-	if (toCheck < 0)
-		throw exception;
-}
-
-void printMessage(std::string msg)
-{
-	std::cout << msg << std::endl;
-}
-
 void Server::openSocket(void)
 {
 
@@ -68,21 +57,15 @@ void Server::openSocket(void)
 	_timeOut.tv_usec = 0;
 
 	_srvSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	SocketNotOpen socketException;
-	checkError(_srvSocket, socketException);
-	printMessage("Succesfully open socket");
+	ErrorHandling::checkErrorPrintSuccess(_srvSocket, "Socket could not open", "Succesfully open socket");
 
 	_maxFdConnected = _srvSocket;
 
 	int currSockFlags = fcntl(_srvSocket, F_GETFL, 0);
-	FlagsNotFetched flagsNotFetched;
-	checkError(currSockFlags, flagsNotFetched);
-	printMessage("Successfully got current socket flags");
+	ErrorHandling::checkErrorPrintSuccess(currSockFlags, "Could not fetch server socket flags", "Successfully got current socket flags");
 
 	int nRet = fcntl(_srvSocket, F_SETFL, currSockFlags | O_NONBLOCK);
-	InvalidNonBlocking invalidNonBlocking;
-	checkError(nRet, invalidNonBlocking);
-	printMessage("Successfully made socket non-blocking");
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Could not make server socket non-blocking", "Successfully made socket non-blocking");
 }
 
 void Server::bindAndListen(void)
@@ -95,14 +78,10 @@ void Server::bindAndListen(void)
 	memset(&srvAddr.sin_zero, 0, 0);
 
 	int nRet = bind(_srvSocket, (sockaddr *)&srvAddr, sizeof(sockaddr));
-	InvalidBind invalidBind;
-	checkError(nRet, invalidBind);
-	printMessage("Successfully bind to local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to bind", "Successfully bind to local port " + std::to_string(_port));
 
 	nRet = listen(_srvSocket, MAX_NB_CLIENTS);
-	InvalidListen invalidListen;
-	checkError(nRet, invalidListen);
-	printMessage("Successfully listen at local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + std::to_string(_port));
 }
 
 void Server::waitAndProcessConnections(void)
@@ -138,7 +117,7 @@ void Server::processConnections(int nRet)
 			processNewMessages();
 	}
 	else if (nRet < 0)
-		throw InvalidSelect();
+		throw std::runtime_error("Fail on select function call");
 	return;
 }
 
@@ -148,8 +127,7 @@ void Server::processNewClient(void)
 	socklen_t clientAddrLen = sizeof(clientAddr);
 
 	int clientSocket = accept(_srvSocket, (sockaddr *)&clientAddr, &clientAddrLen);
-	InvalidAccept invalidAccept;
-	checkError(clientSocket, invalidAccept);
+	ErrorHandling::checkError(clientSocket, "Failed to accept new client connection");
 
 	if (_clients.size() < MAX_NB_CLIENTS)
 	{
@@ -158,12 +136,12 @@ void Server::processNewClient(void)
 			_maxFdConnected = clientSocket;
 
 		std::cout << "New client connected" << std::endl;
-		send(clientSocket, "Connection done successfully!", 30, 0);
+		srvSend(clientSocket, "Connection done successfully!");
 	}
 	else
 	{
 		std::cout << "Client tried to connect but max number of clients reached" << std::endl;
-		send(clientSocket, "Server is full, not allowing new connections", 45, 0);
+		srvSend(clientSocket, "Server is full, not allowing new connections");
 		close(clientSocket);
 	}
 
@@ -172,10 +150,15 @@ void Server::processNewClient(void)
 
 void Server::processNewMessages(void)
 {
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	std::map<int, Client *>::iterator it = _clients.begin();
+	std::map<int, Client *>::iterator nextIt;
+
+	while (it != _clients.end())
 	{
-		if (FD_ISSET((it)->first, &_fr))
+		nextIt = std::next(it);
+		if (FD_ISSET(it->first, &_fr))
 			processOneMessage(it->first);
+		it = nextIt;
 	}
 
 	return;
@@ -183,31 +166,59 @@ void Server::processNewMessages(void)
 
 void Server::processOneMessage(int clientFd)
 {
-	std::cout << "Processing new message from client socket " << clientFd << std::endl;
-	char buff[257] = {
-		0,
-	};
-	int nRet = recv(clientFd, buff, 256, 0);
-	if (nRet < 0)
-		disconnectOneClient(clientFd);
-	else
-	{
-		std::cout << "The message received from the client is: <" << buff << ">";
-		send(clientFd, "Processed your request", 23, 0);
-		std::cout << "*******************************************************" << std::endl;
-	}
-	(void)clientFd;
-	try
-	{
-		Message msg("test placeholder");
-		executeOneMessage(msg);
-	}
-	catch (const std::exception &e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+	std::string oneMsg = readOneMessage(clientFd);
+	std::cout << "Got a message from client " << _clients[clientFd]->getUserName() << std::endl;
+	processCommands(oneMsg);
 
 	return;
+}
+
+std::string Server::readOneMessage(int clientFd)
+{
+	char buff[BUFFER_SIZE];
+	memset(buff, 0, BUFFER_SIZE);
+
+	std::string newLine = "";
+	size_t newLineLastTwoCharIndex = 0;
+
+	while (newLine.find("\r\n", newLineLastTwoCharIndex) == std::string::npos)
+	{
+		int nRet = recv(clientFd, buff, BUFFER_SIZE, 0);
+		if (nRet < 0)
+		{
+			disconnectOneClient(clientFd);
+			break;
+		}
+		else
+		{
+			newLine += std::string(buff);
+			if (newLine.length() >= 2)
+				newLineLastTwoCharIndex = newLine.length() - 2;
+		}
+	}
+	return newLine;
+}
+
+void Server::processCommands(std::string oneMsg)
+{
+	char delimeter[3] = "\r\n";
+	char *command = strtok(const_cast<char *>(oneMsg.c_str()), delimeter);
+
+	while (command != NULL)
+	{
+		try
+		{
+			Message msg(command);
+			std::cout << "Executing <" << command << ">" << std::endl;
+			executeOneMessage(msg);
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << e.what() << '\n';
+		}
+
+		command = strtok(NULL, delimeter);
+	}
 }
 
 void Server::executeOneMessage(Message const &msg)
@@ -259,38 +270,8 @@ void Server::disconnectOneClient(int clientFd)
 	std::cout << "Disconnected client " << username << std::endl;
 }
 
-// Exceptions
-const char *Server::SocketNotOpen::what() const throw()
+// Utils
+void Server::srvSend(int fd, std::string msg)
 {
-	return ("Socket could not open");
-}
-
-const char *Server::FlagsNotFetched::what() const throw()
-{
-	return ("Could not fetch server socket flags");
-}
-
-const char *Server::InvalidNonBlocking::what() const throw()
-{
-	return ("Could not make server socket non-blocking");
-}
-
-const char *Server::InvalidBind::what() const throw()
-{
-	return ("Failed to bind");
-}
-
-const char *Server::InvalidListen::what() const throw()
-{
-	return ("Failed to listen");
-}
-
-const char *Server::InvalidSelect::what() const throw()
-{
-	return ("Failed to listen");
-}
-
-const char *Server::InvalidAccept::what() const throw()
-{
-	return ("Failed to accept new client connection");
+	send(fd, "Server is full, not allowing new connections", msg.length(), 0);
 }

@@ -11,25 +11,6 @@ public:
 	Parser(int argc, char **argv);
 	~Parser(void);
 
-	// Exceptions
-	class InvalidPort : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidPassword : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidNbArgs : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
 private:
 	// Cannonical Form
 	Parser(void);

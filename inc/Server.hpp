@@ -15,6 +15,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Message.hpp"
+#include "ErrorHandling.hpp"
 
 // Macros
 #include "Macros.hpp"
@@ -28,49 +29,6 @@ public:
 
 	// Methods
 	void run(void);
-
-	// Exceptions
-	class SocketNotOpen : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class FlagsNotFetched : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidNonBlocking : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidBind : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidListen : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidSelect : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
-
-	class InvalidAccept : public std::exception
-	{
-	public:
-		virtual const char *what() const throw();
-	};
 
 private:
 	// Cannonical Form
@@ -89,10 +47,14 @@ private:
 	void processNewClient(void);
 	void processNewMessages(void);
 	void processOneMessage(int fd);
+	std::string readOneMessage(int clientFd);
+	void processCommands(std::string oneMsg);
 	void executeOneMessage(Message const &msg);
 
 	void deleteClients(void);
 	void disconnectOneClient(int clientFd);
+
+	void srvSend(int fd, std::string msg);
 
 	// Methods : execution
 	void join(Message const &msg);
