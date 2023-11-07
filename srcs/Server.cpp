@@ -174,40 +174,29 @@ void Server::processNewMessages(void)
 {
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (FD_ISSET(it->first, &_fr))
+		if (FD_ISSET((it)->first, &_fr))
 			processOneMessage(it->first);
 	}
+
 	return;
 }
 
-void Server::processOneMessage(int fd)
+void Server::processOneMessage(int clientFd)
 {
-	// std::cout << "Processing new message from client socket " << fd << std::endl;
-	// char buff[257] = {
-	// 	0,
-	// };
-	// int nRet = recv(nClientScoket, buff, 256, 0);
-	// if (nRet < 0)
-	// {
-	// 	std::cout << "Something wrong happened! Closing the connection for client" << nClientScoket << std::endl;
-	// 	close(nClientScoket);
-	// 	for (int nIndex = 0; nIndex < CLIENTS_MAX_ALLOW; nIndex++)
-	// 	{
-	// 		if (nArrClient[nIndex] == nClientScoket)
-	// 		{
-	// 			nArrClient[nIndex] = 0;
-	// 			std::cout << "Disconnected client" << std::endl;
-	// 			break;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	std::cout << "The message received from the client is: " << buff;
-	// 	send(nClientScoket, "Processed your request", 23, 0);
-	// 	std::cout << "*******************************************************" << std::endl;
-	// }
-	(void)fd;
+	std::cout << "Processing new message from client socket " << clientFd << std::endl;
+	char buff[257] = {
+		0,
+	};
+	int nRet = recv(clientFd, buff, 256, 0);
+	if (nRet < 0)
+		disconnectOneClient(clientFd);
+	else
+	{
+		std::cout << "The message received from the client is: <" << buff << ">";
+		send(clientFd, "Processed your request", 23, 0);
+		std::cout << "*******************************************************" << std::endl;
+	}
+	(void)clientFd;
 	try
 	{
 		Message msg("test placeholder");
@@ -253,6 +242,21 @@ void Server::deleteClients(void)
 			it->second = NULL;
 		}
 	}
+}
+
+void Server::disconnectOneClient(int clientFd)
+{
+	std::string username = _clients[clientFd]->getUserName();
+
+	// tmp
+	std::cout << "Something wrong happened! Closing the connection for client " << username << std::endl;
+
+	close(clientFd);
+	delete _clients[clientFd];
+	_clients.erase(clientFd);
+
+	// tmp
+	std::cout << "Disconnected client " << username << std::endl;
 }
 
 // Exceptions

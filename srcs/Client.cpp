@@ -33,3 +33,9 @@ Client &Client::operator=(const Client &rhs)
 	(void)rhs;
 	return *this;
 }
+
+// Getters
+std::string const &Client::getUserName(void) const
+{
+	return _userName;
+}

@@ -14,6 +14,9 @@ public:
 	Client(int fd, sockaddr_in addr);
 	~Client(void);
 
+	// Getters
+	std::string const &getUserName(void) const;
+
 private:
 	// Cannonical Form
 	Client(void);

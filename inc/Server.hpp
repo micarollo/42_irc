@@ -92,6 +92,7 @@ private:
 	void executeOneMessage(Message const &msg);
 
 	void deleteClients(void);
+	void disconnectOneClient(int clientFd);
 
 	// Methods : execution
 	void join(Message const &msg);
