@@ -16,6 +16,7 @@
 #include "Channel.hpp"
 #include "Message.hpp"
 #include "ErrorHandling.hpp"
+#include "Executor.hpp"
 
 // Macros
 #include "Macros.hpp"
@@ -27,8 +28,12 @@ public:
 	Server(char **argv);
 	~Server(void);
 
+	// Getters
+	std::string const &getName() const;
+
 	// Methods
 	void run(void);
+	void srvSend(int fd, std::string msg);
 
 private:
 	// Cannonical Form
@@ -48,18 +53,14 @@ private:
 	void processNewMessages(void);
 	void processOneMessage(int fd);
 	std::string readOneMessage(int clientFd);
-	void processCommands(std::string oneMsg);
+	void processCommands(std::string oneMsg, int clientFd);
 	void executeOneMessage(Message const &msg);
 
 	void deleteClients(void);
 	void disconnectOneClient(int clientFd);
 
-	void srvSend(int fd, std::string msg);
-
-	// Methods : execution
-	void join(Message const &msg);
-
 	// Attributes
+	std::string _name;
 	int _port;
 	int _srvSocket;
 	int _maxFdConnected;

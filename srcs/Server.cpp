@@ -10,6 +10,7 @@ Server::Server(char **argv)
 {
 	_port = atoi(argv[1]);
 	_srvPassword = std::string(argv[2]);
+	_name = "ft_irc";
 	return;
 }
 
@@ -31,6 +32,12 @@ Server &Server::operator=(const Server &rhs)
 {
 	(void)rhs;
 	return *this;
+}
+
+// Getters
+std::string const &Server::getName() const
+{
+	return _name;
 }
 
 // Methods
@@ -168,7 +175,7 @@ void Server::processOneMessage(int clientFd)
 {
 	std::string oneMsg = readOneMessage(clientFd);
 	std::cout << "Got a message from client " << _clients[clientFd]->getUserName() << std::endl;
-	processCommands(oneMsg);
+	processCommands(oneMsg, clientFd);
 
 	return;
 }
@@ -177,11 +184,12 @@ std::string Server::readOneMessage(int clientFd)
 {
 	char buff[BUFFER_SIZE];
 	memset(buff, 0, BUFFER_SIZE);
+	char delimeter[3] = "\r\n";
 
 	std::string newLine = "";
 	size_t newLineLastTwoCharIndex = 0;
 
-	while (newLine.find("\r\n", newLineLastTwoCharIndex) == std::string::npos)
+	while (newLine.find(delimeter, newLineLastTwoCharIndex) == std::string::npos)
 	{
 		int nRet = recv(clientFd, buff, BUFFER_SIZE, 0);
 		if (nRet < 0)
@@ -192,14 +200,14 @@ std::string Server::readOneMessage(int clientFd)
 		else
 		{
 			newLine += std::string(buff);
-			if (newLine.length() >= 2)
-				newLineLastTwoCharIndex = newLine.length() - 2;
+			if (newLine.length() >= strlen(delimeter))
+				newLineLastTwoCharIndex = newLine.length() - strlen(delimeter);
 		}
 	}
 	return newLine;
 }
 
-void Server::processCommands(std::string oneMsg)
+void Server::processCommands(std::string oneMsg, int clientFd)
 {
 	char delimeter[3] = "\r\n";
 	char *command = strtok(const_cast<char *>(oneMsg.c_str()), delimeter);
@@ -208,8 +216,11 @@ void Server::processCommands(std::string oneMsg)
 	{
 		try
 		{
-			Message msg(command);
+			Message msg(command, _clients[clientFd]);
+
+			// tmp
 			std::cout << "Executing <" << command << ">" << std::endl;
+
 			executeOneMessage(msg);
 		}
 		catch (const std::exception &e)
@@ -223,22 +234,65 @@ void Server::processCommands(std::string oneMsg)
 
 void Server::executeOneMessage(Message const &msg)
 {
+
+	Executor executor(this);
+
 	switch (msg.getCommand())
 	{
-	case (JOIN):
-		join(msg);
+	case (CAP):
 		break;
-
-	default:
-		std::cout << "Should throw exception" << std::endl;
+	case (PASS):
+	{
+		executor.pass(msg);
+		break;
 	}
-	return;
-}
-
-// Methods : execution
-void Server::join(Message const &msg)
-{
-	(void)msg;
+	case (NICK):
+	{
+		executor.nick(msg);
+		break;
+	}
+	case (USER):
+	{
+		executor.user(msg);
+		break;
+	}
+	case (PRIVMSG):
+	{
+		executor.privmsg(msg);
+		break;
+	}
+	case (JOIN):
+	{
+		executor.join(msg);
+		break;
+	}
+	case (KICK):
+	{
+		executor.kick(msg);
+		break;
+	}
+	case (INVITE):
+	{
+		executor.invite(msg);
+		break;
+	}
+	case (TOPIC):
+	{
+		executor.topic(msg);
+		break;
+	}
+	case (MODE):
+	{
+		executor.mode(msg);
+		break;
+	}
+	default:
+	{
+		// tmp
+		std::cout << "Command not implemented" << std::endl;
+		srvSend(msg.getClientExec()->getFd(), "Command <" + msg.getCommandStr() + "> not implemented");
+	}
+	}
 	return;
 }
 
@@ -273,5 +327,6 @@ void Server::disconnectOneClient(int clientFd)
 // Utils
 void Server::srvSend(int fd, std::string msg)
 {
-	send(fd, "Server is full, not allowing new connections", msg.length(), 0);
+	msg += "\n";
+	send(fd, msg.c_str(), msg.length(), 0);
 }
