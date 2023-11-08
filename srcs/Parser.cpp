@@ -35,7 +35,7 @@ bool Parser::parseArguments() const
 		throw std::runtime_error("Invalid number of arguments - format should be ./ircserv <port> <password>");
 
 	if (!parsePort())
-		throw std::runtime_error("Port must be a valid int");
+		throw std::runtime_error("Port must be a valid int betwenn 1 - 65 535");
 
 	if (!parsePassword())
 		throw std::runtime_error("Invalid password");
@@ -45,7 +45,15 @@ bool Parser::parseArguments() const
 
 bool Parser::parsePort() const
 {
-	if (!_argv)
+	char *portArr = _argv[1];
+	for (size_t index = 0; portArr[index]; index++)
+	{
+		if (!isdigit(portArr[index]))
+			return false;
+	}
+
+	int portInt = atoi(portArr);
+	if (portInt > MAX_PORT || portInt <= 0)
 		return false;
 	return true;
 }

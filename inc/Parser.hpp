@@ -3,6 +3,10 @@
 
 // Libraries
 #include <stdexcept>
+#include <cctype>
+
+// Macros
+#include "Macros.hpp"
 
 class Parser
 {
