@@ -146,10 +146,10 @@ void Server::processNewClient(void)
 	}
 	else
 	{
-		std::cout << "Client tried to connect but max number of clients reached" << std::endl;
 		std::string replyMsg = ErrorHandling::prepareMsg(ERR_SERVERFULL, this, "", "");
 		srvSend(clientSocket, replyMsg);
 		close(clientSocket);
+		std::cout << "Client tried to connect but max number of clients reached" << std::endl;
 	}
 
 	return;

@@ -16,7 +16,7 @@ class Executor
 {
 public:
 	// Constructors and Destructiors
-	Executor(Server *srv, Command const *cmd);
+	Executor(Server *srv, Command *cmd);
 	~Executor(void);
 
 	// Methods

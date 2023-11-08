@@ -8,6 +8,9 @@
 #include "Macros.hpp"
 #include "Server.hpp"
 
+// Utils
+std::string prepareReplyCode(int replyCode);
+
 class Server;
 
 class ErrorHandling

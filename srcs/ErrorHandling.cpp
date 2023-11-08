@@ -16,14 +16,16 @@ void ErrorHandling::checkError(int toCheck, std::string errorMsg)
 
 std::string ErrorHandling::prepareMsg(int replyCode, Server *srv, std::string cmd, std::string nickName)
 {
+	std::string replyCodeStr = prepareReplyCode(replyCode);
+
 	switch (replyCode)
 	{
 	case ERR_NEEDMOREPARAMS:
-		return ":" + srv->getName() + " " + std::to_string(replyCode) + " " + nickName + " " + cmd + ":Not enough parameters";
+		return ":" + srv->getName() + " " + replyCodeStr + " " + nickName + " " + cmd + ":Not enough parameters";
 	case ERR_ALREADYREGISTRED:
-		return ":" + srv->getName() + " " + std::to_string(replyCode) + " " + nickName + " " + cmd + ":You may not reregister";
+		return ":" + srv->getName() + " " + replyCodeStr + " " + nickName + " " + cmd + ":You may not reregister";
 	case ERR_SERVERFULL:
-		return ":" + srv->getName() + " " + std::to_string(replyCode) + " * :Server is full - try again later";
+		return ":" + srv->getName() + " " + replyCodeStr + " * :Server is full - try again later";
 	default:
 		break;
 	}
