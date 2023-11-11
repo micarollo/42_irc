@@ -16,6 +16,7 @@ void ErrorHandling::checkError(int toCheck, std::string errorMsg)
 
 std::string ErrorHandling::prepareMsg(int replyCode, Server *srv, std::string cmd, std::string nickName)
 {
+
 	std::string replyCodeStr = prepareReplyCode(replyCode);
 
 	switch (replyCode)
@@ -29,5 +30,6 @@ std::string ErrorHandling::prepareMsg(int replyCode, Server *srv, std::string cm
 	default:
 		break;
 	}
+
 	return "";
 }

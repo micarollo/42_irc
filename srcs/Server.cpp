@@ -44,6 +44,7 @@ std::string const &Server::getName() const
 void Server::run(void)
 {
 	initializeServer();
+	preparePoll();
 
 	while (1)
 		waitAndProcessConnections();
@@ -59,14 +60,8 @@ void Server::initializeServer(void)
 
 void Server::openSocket(void)
 {
-
-	_timeOut.tv_sec = SECONDS_BETWEEN_LISTEN;
-	_timeOut.tv_usec = 0;
-
 	_srvSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	ErrorHandling::checkErrorPrintSuccess(_srvSocket, "Socket could not open", "Succesfully open socket");
-
-	_maxFdConnected = _srvSocket;
 
 	int currSockFlags = fcntl(_srvSocket, F_GETFL, 0);
 	ErrorHandling::checkErrorPrintSuccess(currSockFlags, "Could not fetch server socket flags", "Successfully got current socket flags");
@@ -91,82 +86,100 @@ void Server::bindAndListen(void)
 	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + std::to_string(_port));
 }
 
-void Server::waitAndProcessConnections(void)
+void Server::preparePoll(void)
 {
-	prepareFdSets();
-
-	int nRet = select(_maxFdConnected + 1, &_fr, &_fw, &_fe, &_timeOut);
-	processConnections(nRet);
+	addClientToPoll(_srvSocket);
 }
 
-void Server::prepareFdSets(void)
+void Server::waitAndProcessConnections(void)
 {
-	FD_ZERO(&_fr);
-	FD_ZERO(&_fw);
-	FD_ZERO(&_fe);
-	FD_SET(_srvSocket, &_fr);
-	FD_SET(_srvSocket, &_fe);
-
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
-		FD_SET(it->first, &_fr);
-		FD_SET(it->first, &_fe);
-	}
+	int nRet = poll(&_fds[0], _fds.size(), -1);
+	processConnections(nRet);
 }
 
 void Server::processConnections(int nRet)
 {
 	if (nRet > 0)
 	{
-		if (FD_ISSET(_srvSocket, &_fr))
-			processNewClient();
+		if (_fds[0].revents & POLL_IN)
+			processNewClients();
 		else
 			processNewMessages();
 	}
 	else if (nRet < 0)
-		throw std::runtime_error("Fail on select function call");
+		throw std::runtime_error("Fail on poll function call");
 	return;
 }
 
-void Server::processNewClient(void)
+void Server::processNewClients(void)
+{
+	int clientSocket;
+	do
+	{
+		clientSocket = processNewClient();
+		if (clientSocket < 0)
+			if (errno != EWOULDBLOCK)
+				ErrorHandling::checkError(clientSocket, "Failed to accept new client connection");
+	} while (clientSocket != -1);
+
+	return;
+}
+
+int Server::processNewClient(void)
 {
 	struct sockaddr_in clientAddr;
 	socklen_t clientAddrLen = sizeof(clientAddr);
 
 	int clientSocket = accept(_srvSocket, (sockaddr *)&clientAddr, &clientAddrLen);
-	ErrorHandling::checkError(clientSocket, "Failed to accept new client connection");
-
+	if (clientSocket < 0)
+		return -1;
 	if (_clients.size() < MAX_NB_CLIENTS)
 	{
 		_clients[clientSocket] = new Client(clientSocket, clientAddr);
-		if (clientSocket > _maxFdConnected)
-			_maxFdConnected = clientSocket;
-
-		std::cout << "New client connected" << std::endl;
+		addClientToPoll(clientSocket);
 	}
 	else
 	{
 		std::string replyMsg = ErrorHandling::prepareMsg(ERR_SERVERFULL, this, "", "");
 		srvSend(clientSocket, replyMsg);
 		close(clientSocket);
-		std::cout << "Client tried to connect but max number of clients reached" << std::endl;
 	}
 
-	return;
+	return clientSocket;
+}
+
+void Server::addClientToPoll(int _newPollFd)
+{
+	_fds.push_back(addFdToPoll(_newPollFd));
+}
+
+struct pollfd Server::addFdToPoll(int fd)
+{
+	struct pollfd poll;
+
+	poll.fd = fd;
+	poll.events = POLL_IN;
+
+	return poll;
 }
 
 void Server::processNewMessages(void)
 {
-	std::map<int, Client *>::iterator it = _clients.begin();
-	std::map<int, Client *>::iterator nextIt;
 
-	while (it != _clients.end())
+	for (std::vector<struct pollfd>::iterator it = std::next(_fds.begin()); it != _fds.end(); it++)
 	{
-		nextIt = std::next(it);
-		if (FD_ISSET(it->first, &_fr))
-			processOneMessage(it->first);
-		it = nextIt;
+		if (it->revents == 0)
+			continue;
+		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
+			_fdsToDel.push_back(it->fd);
+		else if ((it->revents & POLL_IN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+			processOneMessage(it->fd);
+		else
+		{
+		}
 	}
+
+	deleteFds();
 
 	return;
 }
@@ -174,8 +187,8 @@ void Server::processNewMessages(void)
 void Server::processOneMessage(int clientFd)
 {
 	std::string oneMsg = readOneMessage(clientFd);
-	std::cout << "Got a message from client " << _clients[clientFd]->getNickName() << std::endl;
-	processCommands(oneMsg, clientFd);
+	if (oneMsg != "")
+		processCommands(oneMsg, clientFd);
 
 	return;
 }
@@ -191,14 +204,15 @@ std::string Server::readOneMessage(int clientFd)
 
 	while (newLine.find(delimeter, newLineLastTwoCharIndex) == std::string::npos)
 	{
-		int nRet = recv(clientFd, buff, BUFFER_SIZE, 0);
+		int nRet = recv(clientFd, buff, BUFFER_SIZE - 1, 0);
 		if (nRet < 0)
 		{
-			disconnectOneClient(clientFd);
-			break;
+			_fdsToDel.push_back(clientFd);
+			return "";
 		}
 		else
 		{
+			buff[BUFFER_SIZE - 1] = 0;
 			newLine += std::string(buff);
 			if (newLine.length() >= strlen(delimeter))
 				newLineLastTwoCharIndex = newLine.length() - strlen(delimeter);
@@ -209,6 +223,7 @@ std::string Server::readOneMessage(int clientFd)
 
 void Server::processCommands(std::string oneMsg, int clientFd)
 {
+
 	char delimeter[3] = "\r\n";
 	char *command = strtok(const_cast<char *>(oneMsg.c_str()), delimeter);
 
@@ -216,11 +231,12 @@ void Server::processCommands(std::string oneMsg, int clientFd)
 	{
 		try
 		{
+			// tmp
+			std::cout << command << std::endl;
+
 			Command cmd(command, _clients[clientFd]);
 
 			// tmp
-			std::cout << "Executing <" << command << ">" << std::endl;
-
 			executeOneCommand(cmd);
 		}
 		catch (const std::exception &e)
@@ -234,7 +250,6 @@ void Server::processCommands(std::string oneMsg, int clientFd)
 
 void Server::executeOneCommand(Command &cmd)
 {
-
 	Executor executor(this, &cmd);
 
 	switch (cmd.getCommand())
@@ -289,10 +304,10 @@ void Server::executeOneCommand(Command &cmd)
 	default:
 	{
 		// tmp
-		std::cout << "Command not implemented" << std::endl;
 		srvSend(cmd.getClientExec()->getFd(), "Command <" + cmd.getCommandStr() + "> not implemented");
 	}
 	}
+
 	return;
 }
 
@@ -309,24 +324,38 @@ void Server::deleteClients(void)
 	}
 }
 
+void Server::deleteFds(void)
+{
+	for (std::vector<int>::iterator it = _fdsToDel.begin(); it != _fdsToDel.end(); it++)
+	{
+		disconnectOneClient(*it);
+	}
+	_fdsToDel.clear();
+}
+
 void Server::disconnectOneClient(int clientFd)
 {
-	std::string nickName = _clients[clientFd]->getNickName();
+	std::vector<struct pollfd>::iterator it;
 
-	// tmp
-	std::cout << "Something wrong happened! Closing the connection for client " << nickName << std::endl;
+	std::cout << "Disconnected client " << _clients[clientFd]->getNickName() << std::endl;
+	for (it = _fds.begin(); it != _fds.end(); it++)
+	{
+		if (it->fd == clientFd)
+		{
+			_fds.erase(it);
+			break;
+		}
+	}
 
 	close(clientFd);
 	delete _clients[clientFd];
 	_clients.erase(clientFd);
-
-	// tmp
-	std::cout << "Disconnected client " << nickName << std::endl;
 }
 
 // Utils
 void Server::srvSend(int fd, std::string msg)
 {
 	msg += "\n";
-	send(fd, msg.c_str(), msg.length(), 0);
+	if (send(fd, msg.c_str(), msg.length(), 0) < 0)
+		throw std::runtime_error("Failed to send");
 }

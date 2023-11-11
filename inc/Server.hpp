@@ -5,11 +5,13 @@
 #include <stdlib.h>
 #include <istream>
 #include <map>
+#include <vector>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include <poll.h>
 
 // Classes
 #include "Client.hpp"
@@ -47,9 +49,12 @@ private:
 	void bindAndListen(void);
 
 	void waitAndProcessConnections(void);
-	void prepareFdSets(void);
+	void preparePoll(void);
 	void processConnections(int nRet);
-	void processNewClient(void);
+	void processNewClients(void);
+	int processNewClient(void);
+	void addClientToPoll(int _newPollFd);
+	struct pollfd addFdToPoll(int fd);
 	void processNewMessages(void);
 	void processOneMessage(int fd);
 	std::string readOneMessage(int clientFd);
@@ -57,6 +62,7 @@ private:
 	void executeOneCommand(Command &cmd);
 
 	void deleteClients(void);
+	void deleteFds(void);
 	void disconnectOneClient(int clientFd);
 
 	// Attributes
@@ -65,9 +71,8 @@ private:
 	std::string _srvPassword;
 
 	int _srvSocket;
-	int _maxFdConnected;
-	fd_set _fr, _fw, _fe;
-	struct timeval _timeOut;
+	std::vector<struct pollfd> _fds;
+	std::vector<int> _fdsToDel;
 
 	std::map<int, Client *> _clients;
 	std::map<std::string, Channel *> _channels;

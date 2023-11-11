@@ -23,6 +23,6 @@
 
 // Connection configurations
 #define MAX_NB_CLIENTS 2
-#define SECONDS_BETWEEN_LISTEN 1
+#define MILISECONDS_BETWEEN_POLL 1
 #define BUFFER_SIZE 4096
 #define MAX_PORT 65535
