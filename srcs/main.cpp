@@ -29,17 +29,13 @@
 
 int main() {
 	Client *cl = NULL;
-    // Ejemplo de mensaje a analizar
-    std::string message = "PRIVMSG #chan :Hey what's up!";
     
-	// Crear una instancia de la clase Command
+    std::string message = "PRIVMSG #chan :Hey what's up!";
+
     Command myCommand(message, cl);
 	Command myCommand1("PRIVMSG :Hola mica!", cl);
 	Command myCommand2("PRIVMG :Hola mica!", cl);
 	Command myCommand3("PRIVMSG Holaaa la la la!", cl);
-
-    // Llamar al método parseMessage para analizar el mensaje
-    // myCommand.parseCommand(message);
 
     return 0;
 }
