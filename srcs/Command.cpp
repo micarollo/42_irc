@@ -1,4 +1,5 @@
 #include "Command.hpp"
+#include <sstream>
 
 // Constructors
 Command::Command(void)
@@ -9,9 +10,9 @@ Command::Command(void)
 Command::Command(std::string msg, Client *clientExec) : _clientExec(clientExec)
 {
 	// tmp
-	_command = 999;
-	_commandStr = "TEST";
-	_params.push_back("hello");
+	// _command = 999;
+	// _commandStr = "TEST";
+	// _params.push_back("hello");
 
 	parseCommand(msg);
 	return;
@@ -60,6 +61,49 @@ std::vector<std::string> const &Command::getParams(void) const
 // Methods
 void Command::parseCommand(std::string const &msg)
 {
-	(void)msg;
+	// (void)msg;
+		// Dividir el mensaje en partes usando un stringstream y delimitadores
+		std::istringstream iss(msg);
+		std::string token;
+		std::string tmp;
+
+		// primer token
+		iss >> token;
+
+		// Verificar si es un comando
+		if (token == "PRIVMSG")
+		{
+			_command = 1; // cambiar
+			_commandStr = token;
+
+			// leer el token
+			iss >> token;
+			if (token[0] == '#')
+			{
+				_params.push_back(token);
+				// leer el resto del mensaje
+				std::getline(iss, token);
+				_params.push_back(token);
+			}
+			else
+			{
+				// agregar al token el resto del msj
+				tmp.append(token);
+				std::getline(iss, token);
+				tmp.append(token);
+				_params.push_back(tmp);
+			}
+
+			// imprimir
+			std::cout << "Command: " << _commandStr << std::endl;
+			std::cout << "Params:" << std::endl;
+			for (size_t i = 0; i < _params.size(); ++i) {
+    			std::cout << "  " << _params[i] << std::endl;
+			}
+		}
+		else
+		{
+			std::cerr << "Error: Mensaje no reconocido" << std::endl;
+		}
 	return;
 }
