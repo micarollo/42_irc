@@ -73,12 +73,12 @@ void Command::parseCommand(std::string const &msg)
 		// Verificar si es un comando
 		if (token == "PRIVMSG")
 		{
-			_command = 1; // cambiar
 			_commandStr = token;
+			_command = 1; // cambiar
 
 			// leer el token
 			iss >> token;
-			if (token[0] == '#')
+			if (token[0] == '#' || token[0] == '&')
 			{
 				_params.push_back(token);
 				// leer el resto del mensaje

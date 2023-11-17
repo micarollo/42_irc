@@ -1,5 +1,10 @@
 #include "Server.hpp"
 
+// INCLUDES PARA PORTATIL MICA y cambio los POLL_IN por POLLIN
+#include <cstring>
+#include <string>
+#include <cerrno>
+
 // Constructors
 Server::Server(void)
 {
@@ -101,7 +106,7 @@ void Server::processConnections(int nRet)
 {
 	if (nRet > 0)
 	{
-		if (_fds[0].revents & POLL_IN)
+		if (_fds[0].revents & POLLIN)
 			processNewClients();
 		else
 			processNewMessages();
@@ -158,7 +163,7 @@ struct pollfd Server::addFdToPoll(int fd)
 	struct pollfd poll;
 
 	poll.fd = fd;
-	poll.events = POLL_IN;
+	poll.events = POLLIN;
 
 	return poll;
 }
@@ -172,7 +177,7 @@ void Server::processNewMessages(void)
 			continue;
 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
 			_fdsToDel.push_back(it->fd);
-		else if ((it->revents & POLL_IN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
 			processOneMessage(it->fd);
 		else
 		{
