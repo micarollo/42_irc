@@ -23,6 +23,7 @@ public:
 
 	// Methods
 	void parseCommand(std::string const &msg);
+	int checkCommand(std::string const &token);
 
 private:
 	// Cannonical Form

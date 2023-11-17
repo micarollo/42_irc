@@ -62,48 +62,73 @@ std::vector<std::string> const &Command::getParams(void) const
 void Command::parseCommand(std::string const &msg)
 {
 	// (void)msg;
-		// Dividir el mensaje en partes usando un stringstream y delimitadores
-		std::istringstream iss(msg);
-		std::string token;
-		std::string tmp;
+	// Dividir el mensaje en partes usando un stringstream y delimitadores
+	std::istringstream iss(msg);
+	std::string token;
+	std::string tmp;
 
-		// primer token
-		iss >> token;
+	// primer token
+	iss >> token;
 
-		// Verificar si es un comando
-		if (token == "PRIVMSG")
-		{
-			_commandStr = token;
-			_command = 1; // cambiar
+	//verificar si es un comando valido
+	_command = checkCommand(token);
+	if (!_command)
+	{
+		std::cout << "Command not found" << std::endl;
+		return ;
+	}
+	_commandStr = token;
 
-			// leer el token
-			iss >> token;
-			if (token[0] == '#' || token[0] == '&')
-			{
-				_params.push_back(token);
-				// leer el resto del mensaje
-				std::getline(iss, token);
-				_params.push_back(token);
-			}
-			else
-			{
-				// agregar al token el resto del msj
-				tmp.append(token);
-				std::getline(iss, token);
-				tmp.append(token);
-				_params.push_back(tmp);
-			}
+	// leer el sig token
+	iss >> token;
+	if (token[0] == '#' || token[0] == '&')
+	{
+		_params.push_back(token);
+		// leer el resto del mensaje
+		std::getline(iss, token);
+		_params.push_back(token);
+	}
+	else
+	{
+		// agregar al token el resto del msj
+		tmp.append(token);
+		std::getline(iss, token);
+		tmp.append(token);
+		_params.push_back(tmp);
+	}
 
-			// imprimir
-			std::cout << "Command: " << _commandStr << std::endl;
-			std::cout << "Params:" << std::endl;
-			for (size_t i = 0; i < _params.size(); ++i) {
-    			std::cout << "  " << _params[i] << std::endl;
-			}
-		}
-		else
-		{
-			std::cerr << "Error: Mensaje no reconocido" << std::endl;
-		}
+	// imprimir
+	std::cout << "Command: " << _commandStr << std::endl;
+	std::cout << "Command num: " << _command << std::endl;
+	std::cout << "Params:" << std::endl;
+	for (size_t i = 0; i < _params.size(); ++i) {
+		std::cout << "  " << _params[i] << std::endl;
+	}
 	return;
+}
+
+int Command::checkCommand(std::string const &token)
+{
+	if (token == "JOIN")
+		return JOIN;
+	else if (token == "CAP")
+		return CAP;
+	else if (token == "PASS")
+		return PASS;
+	else if (token == "NICK")
+		return NICK;
+	else if (token == "USER")
+		return USER;
+	else if (token == "PRIVMSG")
+		return PRIVMSG;
+	else if (token == "KICK")
+		return KICK;
+	else if (token == "INVITE")
+		return INVITE;
+	else if (token == "TOPIC")
+		return TOPIC;
+	else if (token == "MODE")
+		return MODE;
+	else
+		return 0;
 }

@@ -33,9 +33,9 @@ int main() {
     std::string message = "PRIVMSG #chan :Hey what's up!";
 
     Command myCommand(message, cl);
-	Command myCommand1("PRIVMSG :Hola mica!", cl);
+	Command myCommand1("USER :Hola mica!", cl);
 	Command myCommand2("PRIVMG :Hola mica!", cl);
-	Command myCommand3("PRIVMSG Holaaa la la la!", cl);
+	Command myCommand3("INVITE &chan3 Holaaa la la la!", cl);
 
     return 0;
 }
