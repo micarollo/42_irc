@@ -56,6 +56,8 @@ void Executor::pass()
 
 void Executor::nick()
 {
+	if (_cmd->getParams().size() < 1)
+		ErrorHandling::prepareMsg(ERR_NONICKNAMEGIVEN, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
 	// Chekc if args = 1
 	//  if (nickname not valid)
 	//	error -> check what type of error
