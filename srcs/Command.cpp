@@ -99,7 +99,6 @@ void Command::parseCommand(std::string const &msg)
 
 	// imprimir
 	std::cout << "Command: " << _commandStr << std::endl;
-	std::cout << "Params size: " << _params.size() << std::endl;
 	std::cout << "Params:" << std::endl;
 	for (size_t i = 0; i < _params.size(); ++i) {
 		std::cout << "  " << _params[i] << std::endl;
@@ -129,8 +128,6 @@ int Command::checkCommand(std::string const &token)
 		return TOPIC;
 	else if (token == "MODE")
 		return MODE;
-	else if (token[0] == ':') // nop
-		return NICK;
 	else
 		return 0;
 }
