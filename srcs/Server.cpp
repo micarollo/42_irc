@@ -45,6 +45,11 @@ std::string const &Server::getName() const
 	return _name;
 }
 
+std::map<int, Client *> const &Server::getClients()
+{
+	return _clients;
+}
+
 // Methods
 void Server::run(void)
 {
