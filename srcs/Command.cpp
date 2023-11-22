@@ -61,16 +61,12 @@ std::vector<std::string> const &Command::getParams(void) const
 // Methods
 void Command::parseCommand(std::string const &msg)
 {
-	// (void)msg;
-	// Dividir el mensaje en partes usando un stringstream y delimitadores
 	std::istringstream iss(msg);
 	std::string token;
 	std::string tmp;
 
-	// primer token
 	iss >> token;
 
-	//verificar si es un comando valido
 	_command = checkCommand(token);
 	if (!_command)
 	{
@@ -78,31 +74,26 @@ void Command::parseCommand(std::string const &msg)
 		return ;
 	}
 	_commandStr = token;
-
-	// leer el sig token
 	iss >> token;
 	if (token[0] == '#' || token[0] == '&')
 	{
 		_params.push_back(token);
-		// leer el resto del mensaje
 		std::getline(iss, token);
 		_params.push_back(token);
 	}
 	else
 	{
-		// agregar al token el resto del msj
 		tmp.append(token);
 		std::getline(iss, token);
 		tmp.append(token);
 		_params.push_back(tmp);
 	}
-
-	// imprimir
-	std::cout << "Command: " << _commandStr << std::endl;
-	std::cout << "Params:" << std::endl;
-	for (size_t i = 0; i < _params.size(); ++i) {
-		std::cout << "  " << _params[i] << std::endl;
-	}
+	// IMPRIMIR
+	// std::cout << "Command: " << _commandStr << std::endl;
+	// std::cout << "Params:" << std::endl;
+	// for (size_t i = 0; i < _params.size(); ++i) {
+	// 	std::cout << "  " << _params[i] << std::endl;
+	// }
 	return;
 }
 
