@@ -30,7 +30,7 @@ INC_DIR				= inc
 LINK				= c++
 CC					= c++ -c
 DEPFLAGS			= -MMD -MP
-CFLAGS				= -Wall -Wextra -Werror -std=c++98 -Wshadow -Wno-shadow 
+CFLAGS				= -Wall -Wextra -Werror -Wshadow -Wno-shadow 
 RM					= rm -rf
 INCLUDE				= -I $(INC_DIR)
 
