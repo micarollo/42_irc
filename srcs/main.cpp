@@ -36,6 +36,9 @@ int main() {
 	Command myCommand1("USER :Hola mica!", cl);
 	Command myCommand2("PRIVMG :Hola mica!", cl);
 	Command myCommand3("INVITE &chan3 Holaaa la la la!", cl);
+	Command myCommand4("", cl);
+	Command myCommand5("                      ", cl);
+	Command myCommand6(":mica NICK rollo", cl);
 
     return 0;
 }
