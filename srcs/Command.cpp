@@ -63,10 +63,9 @@ void Command::parseCommand(std::string const &msg)
 {
 	std::istringstream iss(msg);
 	std::string token;
-	std::string tmp;
+	// std::string tmp;
 
 	iss >> token;
-
 	_command = checkCommand(token);
 	if (!_command)
 	{
@@ -74,26 +73,55 @@ void Command::parseCommand(std::string const &msg)
 		return ;
 	}
 	_commandStr = token;
-	iss >> token;
-	if (token[0] == '#' || token[0] == '&')
-	{
-		_params.push_back(token);
-		std::getline(iss, token);
-		_params.push_back(token);
-	}
-	else
-	{
-		tmp.append(token);
-		std::getline(iss, token);
-		tmp.append(token);
-		_params.push_back(tmp);
-	}
-	// IMPRIMIR
-	// std::cout << "Command: " << _commandStr << std::endl;
-	// std::cout << "Params:" << std::endl;
-	// for (size_t i = 0; i < _params.size(); ++i) {
-	// 	std::cout << "  " << _params[i] << std::endl;
+	while (std::getline(iss, token)) {
+        _params.push_back(token);
+    }
+	
+	// iss >> token;
+	// _command = checkCommand(token);
+	// if (!_command)
+	// {
+	// 	std::cout << "Command not found" << std::endl;
+	// 	return ;
 	// }
+	// _commandStr = token;
+	// iss >> token;
+	// if (token[0] == '#' || token[0] == '&')
+	// {
+	// 	_params.push_back(token);
+	// 	std::getline(iss, token);
+	// 	_params.push_back(token);
+	// }
+	// else
+	// {
+	// 	// tmp.append(token);
+	// 	// std::getline(iss, token);
+	// 	// tmp.append(token);
+	// 	// _params.push_back(tmp);
+	// 	tmp.append(token);
+	// 	iss >> token;
+	// 	if(iss.eof())
+	// 	{
+	// 		_params.push_back(token);
+	// 		std::cout << "FIN" << token << std::endl;
+	// 	}
+	// 	else
+	// 	{
+	// 		tmp.append(" ");
+	// 		tmp.append(token);
+	// 		std::getline(iss, token);
+	// 		tmp.append(token);
+	// 		_params.push_back(tmp);
+	// 	}
+	// 	// std::getline(iss, token);
+	// 	// _params.push_back(token);
+	// }
+	// IMPRIMIR
+	std::cout << "Command: " << _commandStr << std::endl;
+	std::cout << "Params:" << std::endl;
+	for (size_t i = 0; i < _params.size(); ++i) {
+		std::cout << _params[i] << std::endl;
+	}
 	return;
 }
 
