@@ -1,5 +1,6 @@
 #include "Command.hpp"
 #include <sstream>
+#include <limits>
 
 // Constructors
 Command::Command(void)
@@ -73,7 +74,8 @@ void Command::parseCommand(std::string const &msg)
 		return ;
 	}
 	_commandStr = token;
-	while (std::getline(iss, token)) {
+	iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+	while (std::getline(iss, token, ' ')) {
         _params.push_back(token);
     }
 	
@@ -120,7 +122,7 @@ void Command::parseCommand(std::string const &msg)
 	std::cout << "Command: " << _commandStr << std::endl;
 	std::cout << "Params:" << std::endl;
 	for (size_t i = 0; i < _params.size(); ++i) {
-		std::cout << _params[i] << std::endl;
+		std::cout << "*" << _params[i] << "*" << std::endl;
 	}
 	return;
 }
