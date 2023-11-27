@@ -56,8 +56,8 @@ void Executor::pass()
 
 void Executor::nick()
 {
-	std::cout << "params: " << "\"" << _cmd->getParams()[0] << "\"" << std::endl;
-	//set nickname
+	// std::cout << "params: " << "\"" << _cmd->getParams()[0] << "\"" << std::endl;
+	//SET NICKNAME
 	_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
 	std::cout << "nickname: " << _cmd->getClientExec()->getNickName() << std::endl;
 	// if (_cmd->getParams().size() < 2)
