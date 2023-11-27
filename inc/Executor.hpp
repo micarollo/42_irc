@@ -30,7 +30,7 @@ public:
 	void topic();
 	void mode();
 
-	// bool isNickUsed(std::string nickName);
+	bool isNickUsed(std::string nickName);
 
 private:
 	// Cannonical Form
