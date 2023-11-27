@@ -56,6 +56,20 @@ void Executor::pass()
 
 void Executor::nick()
 {
+	// std::cout << "params: " << "\"" << _cmd->getParams()[0] << "\"" << std::endl;
+	//SET NICKNAME
+	_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
+	std::cout << "nickname: " << _cmd->getClientExec()->getNickName() << std::endl;
+	// if (_cmd->getParams().size() < 2)
+    // {
+    //   ErrorHandling::prepareMsg(ERR_NONICKNAMEGIVEN, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+    //   return;
+    // }
+    // if (isNickAllowed(_cmd->getParams()[0]))
+    // {
+    //    ErrorHandling::prepareMsg(ERR_ERRONEUSNICKNAME, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+    //    return;
+    // }
 		// Chekc if args = 1
 		//  if (nickname not valid)
 		//	error -> check what type of error
@@ -78,6 +92,26 @@ void Executor::nick()
 
 	return;
 }
+
+// static bool isNickAllowed(std::string nickName)
+// {
+// 	std::size_t found = nickName.find_first_not_of("QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890[]{}\\|-");
+// 	if (found != std::string::npos)
+// 		return true;
+// 	return false;
+// }
+
+// bool Executor::isNickUsed(std::string nickName)
+// {
+// 	std::map<int, Client *> clients = _srv->getClients();
+
+// 	for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end(); it++)
+// 	{
+// 		if (it->second->getNickName() == nickName)
+// 			return (true);
+// 	}
+// 	return (false);
+// }
 
 void Executor::user()
 {

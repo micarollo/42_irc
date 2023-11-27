@@ -28,6 +28,7 @@ public:
 
 	// Setters
 	void setPassword(std::string const &pass);
+	void setNickName(std::string const &nick);
 
 private:
 	// Cannonical Form

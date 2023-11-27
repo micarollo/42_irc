@@ -1,5 +1,6 @@
 #include "Command.hpp"
 #include <sstream>
+#include <limits>
 
 // Constructors
 Command::Command(void)
@@ -64,35 +65,39 @@ void Command::parseCommand(std::string const &msg)
 	std::istringstream iss(msg);
 	std::string token;
 	std::string tmp;
+	bool flag = false;
 
 	iss >> token;
-
 	_command = checkCommand(token);
-	if (!_command)
+	if (!_command) // CHECK ERROR
 	{
 		std::cout << "Command not found" << std::endl;
-		return ;
+		return;
 	}
 	_commandStr = token;
-	iss >> token;
-	if (token[0] == '#' || token[0] == '&')
+	iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+	while (std::getline(iss, token, ' '))
 	{
-		_params.push_back(token);
-		std::getline(iss, token);
-		_params.push_back(token);
+		if (token[0] == ':')
+			flag = true;
+		if (flag)
+		{
+			if (!tmp.empty())
+                tmp.append(" ");
+			tmp.append(token);
+		}
+		else
+			_params.push_back(token);
 	}
-	else
-	{
-		tmp.append(token);
-		std::getline(iss, token);
-		tmp.append(token);
+	if (!tmp.empty())
 		_params.push_back(tmp);
-	}
 	// IMPRIMIR
 	// std::cout << "Command: " << _commandStr << std::endl;
 	// std::cout << "Params:" << std::endl;
-	// for (size_t i = 0; i < _params.size(); ++i) {
-	// 	std::cout << "  " << _params[i] << std::endl;
+	// for (size_t i = 0; i < _params.size(); ++i)
+	// {
+	// 	std::cout << _params[i] << std::endl;
+	// 	std::cout << "*" << _params[i] << "*" << std::endl;
 	// }
 	return;
 }

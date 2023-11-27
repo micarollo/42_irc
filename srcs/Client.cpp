@@ -68,3 +68,9 @@ void Client::setPassword(std::string const &pass)
 	_password = pass;
 	return;
 }
+
+void Client::setNickName(std::string const &nick)
+{
+	_nickName = nick;
+	return;
+}
