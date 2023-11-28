@@ -97,9 +97,9 @@ void Command::parseCommand(std::string const &msg)
 	// for (size_t i = 0; i < _params.size(); ++i)
 	// {
 	// 	std::cout << _params[i] << std::endl;
-	// 	std::cout << "*" << _params[i] << "*" << std::endl;
+	// 	// std::cout << "*" << _params[i] << "*" << std::endl;
 	// }
-	return;
+	// return;
 }
 
 int Command::checkCommand(std::string const &token)

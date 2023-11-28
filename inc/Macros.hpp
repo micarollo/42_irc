@@ -10,6 +10,7 @@
 #define ERR_ALREADYREGISTRED 462
 #define ERR_NONICKNAMEGIVEN 431
 #define ERR_ERRONEUSNICKNAME 432
+#define ERR_NICKNAMEINUSE 433
 
 // Commands implemented
 #define JOIN 1

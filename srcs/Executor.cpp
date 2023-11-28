@@ -58,8 +58,6 @@ void Executor::pass()
 
 void Executor::nick()
 {
-	// std::cout << "params: " << "\"" << _cmd->getParams()[0] << "\"" << std::endl;
-	// SET NICKNAME
 	if (_cmd->getParams().size() > 1)
 	{
 		std::cout << "> params" << std::endl;
@@ -75,8 +73,10 @@ void Executor::nick()
 	if (isNickUsed(_cmd->getParams()[0]))
 	{
 		std::cout << "is used" << std::endl;
+		ErrorHandling::prepareMsg(ERR_NICKNAMEINUSE, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
 		return;
 	}
+	// SET NICKNAME
 	_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
 	std::cout << "nickname: " << _cmd->getClientExec()->getNickName() << std::endl;
 	// Chekc if args = 1
@@ -124,6 +124,20 @@ bool Executor::isNickUsed(std::string nickName)
 
 void Executor::user()
 {
+	if (_cmd->getParams().size() < 4 || _cmd->getParams().front().empty())
+	{
+		// "<client> <command> :Not enough parameters"
+		ErrorHandling::prepareMsg(ERR_NEEDMOREPARAMS, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		return ;
+	}
+	if (_cmd->getClientExec()->getStatus() == REGISTERED)
+	{
+		ErrorHandling::prepareMsg(ERR_ALREADYREGISTRED, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		return ;
+	}
+	_cmd->getClientExec()->setUserName(_cmd->getParams().front());
+	_cmd->getClientExec()->setRealName(_cmd->getParams().back());
+	//HOSTNAME?
 	// 464     ERR_PASSWDMISMATCH when attempting to register later
 
 	return;

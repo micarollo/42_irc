@@ -21,6 +21,7 @@ public:
 
 	// Getters
 	std::string const &getUserName(void) const;
+	std::string const &getRealName(void) const;
 	std::string const &getNickName(void) const;
 	std::string const &getPassword(void) const;
 	int const &getFd(void) const;
@@ -29,6 +30,8 @@ public:
 	// Setters
 	void setPassword(std::string const &pass);
 	void setNickName(std::string const &nick);
+	void setRealName(std::string const &name);
+	void setUserName(std::string const &name);
 
 private:
 	// Cannonical Form
@@ -43,6 +46,7 @@ private:
 	std::string _hostname;
 	std::string _nickName;
 	std::string _userName;
+	std::string _realName;
 };
 
 #endif
