@@ -90,7 +90,10 @@ void Command::parseCommand(std::string const &msg)
 			_params.push_back(token);
 	}
 	if (!tmp.empty())
+	{
+		tmp = tmp.substr(1);
 		_params.push_back(tmp);
+	}
 	// IMPRIMIR
 	// std::cout << "Command: " << _commandStr << std::endl;
 	// std::cout << "Params:" << std::endl;
@@ -99,7 +102,7 @@ void Command::parseCommand(std::string const &msg)
 	// 	std::cout << _params[i] << std::endl;
 	// 	// std::cout << "*" << _params[i] << "*" << std::endl;
 	// }
-	// return;
+	return;
 }
 
 int Command::checkCommand(std::string const &token)
