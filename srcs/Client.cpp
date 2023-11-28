@@ -92,3 +92,9 @@ void Client::setUserName(std::string const &name)
 	_userName = name;
 	return;
 }
+
+void Client::setStatus(int const &st)
+{
+	_status = st;
+	return;
+}

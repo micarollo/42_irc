@@ -32,6 +32,7 @@ public:
 	void setNickName(std::string const &nick);
 	void setRealName(std::string const &name);
 	void setUserName(std::string const &name);
+	void setStatus(int const &st);
 
 private:
 	// Cannonical Form

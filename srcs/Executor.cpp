@@ -58,7 +58,9 @@ void Executor::pass()
 
 void Executor::nick()
 {
-	if (_cmd->getParams().size() > 1)
+	std::string oldNickName;
+
+	if (_cmd->getParams().size() > 1 || _cmd->getParams()[0] == "")
 	{
 		std::cout << "> params" << std::endl;
 		ErrorHandling::prepareMsg(ERR_NONICKNAMEGIVEN, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
@@ -77,8 +79,17 @@ void Executor::nick()
 		return;
 	}
 	// SET NICKNAME
+	if (_cmd->getClientExec()->getStatus() == REGISTERED)
+	{
+		oldNickName = _cmd->getClientExec()->getNickName();
+		_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
+		//MSG ": oldNickName NICK newNickName"
+		std::cout << ":" << oldNickName << " " << _cmd->getCommandStr() << " " << _cmd->getClientExec()->getNickName() << std::endl;
+	}
+	//if PRE_REGISTERED
 	_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
-	std::cout << "nickname: " << _cmd->getClientExec()->getNickName() << std::endl;
+	// std::cout << "nickname: " << _cmd->getClientExec()->getNickName() << std::endl;
+	
 	// Chekc if args = 1
 	//  if (nickname not valid)
 	//	error -> check what type of error
@@ -139,7 +150,7 @@ void Executor::user()
 	_cmd->getClientExec()->setRealName(_cmd->getParams().back());
 	//HOSTNAME?
 	// 464     ERR_PASSWDMISMATCH when attempting to register later
-
+	//RPL_WELCOME "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
 	return;
 }
 
