@@ -87,7 +87,15 @@ void Command::parseCommand(std::string const &msg)
 			tmp.append(token);
 		}
 		else
+		{
+			if (token[0] == '#' || token[0] == '&')
+			{
+				size_t lpos = token.size() - 1;
+				if (token[lpos] == ',')
+					token = token.substr(0, lpos);
+			}
 			_params.push_back(token);
+		}
 	}
 	if (!tmp.empty())
 	{
