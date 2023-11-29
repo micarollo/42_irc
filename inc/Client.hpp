@@ -34,6 +34,8 @@ public:
 	void setUserName(std::string const &name);
 	void setStatus(int const &st);
 
+	void sendMsg(const std::string &msg);
+
 private:
 	// Cannonical Form
 	Client(void);

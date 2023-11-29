@@ -98,3 +98,10 @@ void Client::setStatus(int const &st)
 	_status = st;
 	return;
 }
+
+//FUNC
+
+void Client::sendMsg(const std::string &msg)
+{
+	send(this->getFd(), (msg + "\r\n").c_str(), msg.size() + 2, 0);
+}
