@@ -6,11 +6,12 @@
 
 // Reply Codes
 #define ERR_SERVERFULL 403
+#define ERR_NOTEXTTOSEND 412
+#define ERR_ERRONEUSNICKNAME 432
+#define ERR_NICKNAMEINUSE 433
 #define ERR_NEEDMOREPARAMS 461
 #define ERR_ALREADYREGISTRED 462
 #define ERR_NONICKNAMEGIVEN 431
-#define ERR_ERRONEUSNICKNAME 432
-#define ERR_NICKNAMEINUSE 433
 
 // Commands implemented
 #define JOIN 1
@@ -32,3 +33,9 @@
 
 
 # define NICKNAME_ALLOW "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890[]{}\\|-"
+
+//RPL_MSG
+# define RPL_WELCOME(client, networkname, nick) (std::string("001 ") + client + " :Welcome to the " + networkname + " Network, " + nick)
+# define RPL_YOURHOST(client, servername) (std::string("002 ") + client + " :Your host is " + servername + ", running version 3.0")
+# define RPL_CREATED(client, datetime) (std::string("003 ") + client + " :This server was created " + datetime)
+# define RPL_MYINFO(client, servername) (std::string("004 ") + client + " " + servername +  " version 3.0")
