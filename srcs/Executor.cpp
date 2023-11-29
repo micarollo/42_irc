@@ -84,12 +84,20 @@ void Executor::nick()
 		oldNickName = _cmd->getClientExec()->getNickName();
 		_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
 		//MSG ": oldNickName NICK newNickName"
-		std::cout << ":" << oldNickName << " " << _cmd->getCommandStr() << " " << _cmd->getClientExec()->getNickName() << std::endl;
+		// _cmd->getClientExec()->sendMsg();
 	}
-	//if PRE_REGISTERED
-	_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
-	// std::cout << "nickname: " << _cmd->getClientExec()->getNickName() << std::endl;
-	
+	else
+	{
+		_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
+		if (!_cmd->getClientExec()->getNickName().empty() && !_cmd->getClientExec()->getUserName().empty())
+		{
+			_cmd->getClientExec()->setStatus(REGISTERED);
+			// RPL_WELCOME
+			_cmd->getClientExec()->sendMsg(RPL_WELCOME(_cmd->getClientExec()->getNickName(), "network", _cmd->getClientExec()->getNickName()));
+
+		}
+	}
+
 	// Chekc if args = 1
 	//  if (nickname not valid)
 	//	error -> check what type of error
@@ -148,14 +156,28 @@ void Executor::user()
 	}
 	_cmd->getClientExec()->setUserName(_cmd->getParams().front());
 	_cmd->getClientExec()->setRealName(_cmd->getParams().back());
+	// RPL_WELCOME
+	_cmd->getClientExec()->sendMsg(RPL_WELCOME(_cmd->getClientExec()->getNickName(), "network", _cmd->getClientExec()->getNickName()));
 	//HOSTNAME?
 	// 464     ERR_PASSWDMISMATCH when attempting to register later
-	//RPL_WELCOME "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
 	return;
 }
 
 void Executor::privmsg()
 {
+	if (_cmd->getParams().size() < 2)
+	{
+		ErrorHandling::prepareMsg(ERR_NOTEXTTOSEND, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		return ;
+	}
+	for (unsigned int i = 0; i < _cmd->getParams().size() - 1; i++)
+	{
+		if (_cmd->getParams()[i][0] == '#' || _cmd->getParams()[i][0] == '&')
+			//CHAN PRIVMSG
+		else
+			//CLIENT PRIVMSG
+	}
+
 	return;
 }
 
