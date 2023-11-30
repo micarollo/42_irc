@@ -50,6 +50,11 @@ std::map<int, Client *> const &Server::getClients()
 	return _clients;
 }
 
+std::map<std::string, Channel *> const &Server::getChannels()
+{
+	return _channels;
+}
+
 // Methods
 void Server::run(void)
 {
