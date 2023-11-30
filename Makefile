@@ -12,7 +12,11 @@ SRCS				= main.cpp\
 						Command.cpp\
 						Executor.cpp\
 						utils.cpp\
-						ErrorHandling.cpp
+						ErrorHandling.cpp\
+						commands/user.cpp\
+						commands/pass.cpp\
+						commands/nick.cpp\
+						commands/privmsg.cpp\
 
 MK					= Makefile
 
