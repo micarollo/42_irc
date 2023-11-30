@@ -45,6 +45,11 @@ std::string const &Server::getName() const
 	return _name;
 }
 
+std::string const &Server::getPass() const
+{
+	return _srvPassword;
+}
+
 std::map<int, Client *> const &Server::getClients()
 {
 	return _clients;

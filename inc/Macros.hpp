@@ -6,7 +6,6 @@
 
 // Reply Codes
 #define ERR_NOSUCHNICK 401
-#define ERR_SERVERFULL 403
 #define ERR_NOTEXTTOSEND 412
 
 // Commands implemented
@@ -29,6 +28,9 @@
 
 
 # define NICKNAME_ALLOW "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890[]{}\\|-"
+
+// SERVER SETUP
+#define ERR_SERVERFULL(srv) (":" + srv->getName() + " 403 " + " * :Server is full - try again later")
 
 //RPL_MSG
 # define RPL_WELCOME(client, networkname, nick) (std::string("001 ") + client + " :Welcome to the " + networkname + " Network, " + nick)

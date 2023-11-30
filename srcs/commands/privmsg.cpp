@@ -4,7 +4,7 @@ void Executor::privmsg()
 {
 	if (_cmd->getParams().size() < 2)
 	{
-		ErrorHandling::prepareMsg(ERR_NOTEXTTOSEND, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		// ErrorHandling::prepareMsg(ERR_NOTEXTTOSEND, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
 		return ;
 	}
 	// for (unsigned int i = 0; i < _cmd->getParams().size() - 1; i++)
