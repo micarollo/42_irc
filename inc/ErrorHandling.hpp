@@ -19,7 +19,6 @@ public:
 	// Static Methods
 	static void checkErrorPrintSuccess(int toCheck, std::string errorMsg, std::string successMsg);
 	static void checkError(int toCheck, std::string errorMsg);
-	static std::string prepareMsg(int replyCode, Server *srv, std::string cmd, std::string nickName);
 
 private:
 	// Cannonical Form
