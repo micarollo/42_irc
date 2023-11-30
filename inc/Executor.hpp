@@ -31,6 +31,7 @@ public:
 	void mode();
 
 	bool isNickUsed(std::string nickName);
+	// void chanMsg(std::string &chan, Client const *client);
 
 private:
 	// Cannonical Form
