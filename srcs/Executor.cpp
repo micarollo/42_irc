@@ -31,12 +31,6 @@ Server *const &Executor::getSrv() const
 }
 
 // Methods
-
-void Executor::join()
-{
-	return;
-}
-
 void Executor::kick()
 {
 	return;
