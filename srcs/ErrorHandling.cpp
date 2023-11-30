@@ -18,13 +18,11 @@ std::string ErrorHandling::prepareMsg(int replyCode, Server *srv, std::string cm
 {
 
 	std::string replyCodeStr = prepareReplyCode(replyCode);
+	(void)nickName;
+	(void)cmd;
 
 	switch (replyCode)
 	{
-	case ERR_NEEDMOREPARAMS:
-		return ":" + srv->getName() + " " + replyCodeStr + " " + nickName + " " + cmd + ":Not enough parameters";
-	case ERR_ALREADYREGISTRED:
-		return ":" + srv->getName() + " " + replyCodeStr + " " + nickName + " " + cmd + ":You may not reregister";
 	case ERR_SERVERFULL:
 		return ":" + srv->getName() + " " + replyCodeStr + " * :Server is full - try again later";
 	default:

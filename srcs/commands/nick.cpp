@@ -8,20 +8,17 @@ void Executor::nick()
 
 	if (_cmd->getParams().size() > 1 || _cmd->getParams()[0] == "")
 	{
-		std::cout << "> params" << std::endl;
-		ErrorHandling::prepareMsg(ERR_NONICKNAMEGIVEN, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		_cmd->getClientExec()->sendMsg(ERR_NONICKNAMEGIVEN(_cmd->getClientExec()->getUserName()));
 		return;
 	}
 	if (isNickAllowed(_cmd->getParams()[0]))
 	{
-		std::cout << "not allowed" << std::endl;
-		ErrorHandling::prepareMsg(ERR_ERRONEUSNICKNAME, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		_cmd->getClientExec()->sendMsg(ERR_ERRONEUSNICKNAME(_cmd->getClientExec()->getUserName(), _cmd->getClientExec()->getNickName()));
 		return;
 	}
 	if (isNickUsed(_cmd->getParams()[0]))
 	{
-		std::cout << "is used" << std::endl;
-		ErrorHandling::prepareMsg(ERR_NICKNAMEINUSE, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		_cmd->getClientExec()->sendMsg(ERR_NICKNAMEINUSE(_cmd->getClientExec()->getUserName(), _cmd->getClientExec()->getNickName()));
 		return;
 	}
 	// SET NICKNAME
@@ -29,41 +26,28 @@ void Executor::nick()
 	{
 		oldNickName = _cmd->getClientExec()->getNickName();
 		_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
-		//MSG ": oldNickName NICK newNickName"
-		// _cmd->getClientExec()->sendMsg();
+		_cmd->getClientExec()->sendMsg((":" + oldNickName + " NICK " + _cmd->getClientExec()->getNickName()));
 	}
 	else
 	{
 		_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
-		if (!_cmd->getClientExec()->getNickName().empty() && !_cmd->getClientExec()->getUserName().empty())
+		if (_cmd->getClientExec()->getNickName() != "*" && _cmd->getClientExec()->getUserName() != "*")
 		{
-			_cmd->getClientExec()->setStatus(REGISTERED);
-			// RPL_WELCOME
-			_cmd->getClientExec()->sendMsg(RPL_WELCOME(_cmd->getClientExec()->getNickName(), "network", _cmd->getClientExec()->getNickName()));
-
+			if (_cmd->getClientExec()->getPassword() == _srv->getPass())
+			{
+				_cmd->getClientExec()->setStatus(REGISTERED);
+				// RPL_WELCOME
+				_cmd->getClientExec()->sendMsg(RPL_WELCOME(_cmd->getClientExec()->getUserName(), "network", _cmd->getClientExec()->getNickName()));
+			}
+			else
+			{
+				_cmd->getClientExec()->setNickName("*");
+				_cmd->getClientExec()->setUserName("*");
+				_cmd->getClientExec()->setRealName("*");
+				_cmd->getClientExec()->sendMsg(ERR_PASSWDMISMATCH(_cmd->getClientExec()->getUserName()));
+			}
 		}
 	}
-
-	// Chekc if args = 1
-	//  if (nickname not valid)
-	//	error -> check what type of error
-	//	return;
-	//  if (nickname is already used)
-	//		new connection -> should close connection? or give more attempts?
-	//		already connected -> should close connection? or just dont change?
-	//		ERR_NICKNAMEINUSE(433);
-	// if (nickname == "")
-	// 		set nickname
-	// else
-	// 		update nickname -check if message is needed and reply code
-
-	// if status == PRE_REGISTER and nickname != "" and username != ""
-	// 		if password match
-	//			send reply code of confirmation to client
-	//			update status for REGISTERED
-	//		else
-	// 			464     ERR_PASSWDMISMATCH
-
 	return;
 }
 
