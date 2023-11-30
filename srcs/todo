@@ -4,3 +4,5 @@
 - protect close
 - investigate command part
 - format reply code with 001
+
+- client hostname

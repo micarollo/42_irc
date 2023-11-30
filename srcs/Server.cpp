@@ -78,10 +78,7 @@ void Server::openSocket(void)
 	_srvSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	ErrorHandling::checkErrorPrintSuccess(_srvSocket, "Socket could not open", "Succesfully open socket");
 
-	int currSockFlags = fcntl(_srvSocket, F_GETFL, 0);
-	ErrorHandling::checkErrorPrintSuccess(currSockFlags, "Could not fetch server socket flags", "Successfully got current socket flags");
-
-	int nRet = fcntl(_srvSocket, F_SETFL, currSockFlags | O_NONBLOCK);
+	int nRet = fcntl(_srvSocket, F_SETFL, O_NONBLOCK);
 	ErrorHandling::checkErrorPrintSuccess(nRet, "Could not make server socket non-blocking", "Successfully made socket non-blocking");
 }
 
