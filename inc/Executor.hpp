@@ -2,6 +2,7 @@
 #define __EXECUTOR_HPP__
 
 // Libraries
+#include <sstream>
 
 // Classes
 #include "Server.hpp"
@@ -29,6 +30,7 @@ public:
 	void invite();
 	void topic();
 	void mode();
+	void part();
 
 	bool isNickUsed(std::string nickName);
 	// void chanMsg(std::string &chan, Client const *client);

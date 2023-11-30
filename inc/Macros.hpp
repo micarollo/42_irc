@@ -22,6 +22,7 @@
 #define INVITE 8
 #define TOPIC 9
 #define MODE 10
+#define PART 11
 
 // Connection configurations
 #define MAX_NB_CLIENTS 2
@@ -41,5 +42,9 @@
 #define RPL_MYINFO(client, servername) (std::string("004 ") + client + " " + servername + " version 3.0")
 
 // PASS
-#define ERR_NEEDMOREPARAMS(srv, cmd, nickName) (":" + srv->getName() + " 461 " + nickName + " " + cmd + ":Not enough parameters")
+#define ERR_NEEDMOREPARAMS(srv, cmd, nickName) (":" + srv->getName() + " 461 " + nickName + " " + cmd + " :Not enough parameters")
 #define ERR_ALREADYREGISTRED(srv, cmd, nickName) (":" + srv->getName() + " 462 " + nickName + " " + cmd + ":You may not reregister")
+
+// JOIN
+#define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
+#define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")

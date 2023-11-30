@@ -363,6 +363,13 @@ void Server::disconnectOneClient(int clientFd)
 	_clients.erase(clientFd);
 }
 
+// Channels
+void Server::addChannel(Channel &ch)
+{
+	_channels[ch.getName()] = &ch;
+	return;
+}
+
 // Utils
 void Server::srvSend(int fd, std::string msg)
 {
