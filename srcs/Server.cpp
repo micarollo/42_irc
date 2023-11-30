@@ -152,8 +152,7 @@ int Server::processNewClient(void)
 	}
 	else
 	{
-		std::string replyMsg = ErrorHandling::prepareMsg(ERR_SERVERFULL, this, "", "");
-		srvSend(clientSocket, replyMsg);
+		srvSend(clientSocket, ERR_SERVERFULL(this));
 		close(clientSocket);
 	}
 
