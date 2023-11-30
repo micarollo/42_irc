@@ -316,7 +316,7 @@ void Server::executeOneCommand(Command &cmd)
 	default:
 	{
 		// tmp
-		srvSend(cmd.getClientExec()->getFd(), "Command <" + cmd.getCommandStr() + "> not implemented");
+		cmd.getClientExec()->sendMsg("Command <" + cmd.getCommandStr() + "> not implemented");
 	}
 	}
 
@@ -367,7 +367,7 @@ void Server::disconnectOneClient(int clientFd)
 // Utils
 void Server::srvSend(int fd, std::string msg)
 {
-	msg += "\n";
+	msg += "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) < 0)
 		throw std::runtime_error("Failed to send");
 }
