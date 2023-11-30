@@ -33,6 +33,7 @@ public:
 	// Getters
 	std::string const &getName() const;
 	std::map<int, Client *> const &getClients();
+	std::map<std::string, Channel *> const &getChannels();
 
 	// Methods
 	void run(void);

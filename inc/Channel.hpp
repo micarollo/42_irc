@@ -21,6 +21,8 @@ private:
 	Channel &operator=(const Channel &rhs);
 
 	// Attributes
+	std::string _name;
+	std::string _topic;
 	std::map<std::string, Client *> _users;
 	std::map<std::string, Client *> _operators;
 	// int _userLimit;

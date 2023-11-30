@@ -87,17 +87,28 @@ void Command::parseCommand(std::string const &msg)
 			tmp.append(token);
 		}
 		else
+		{
+			if (token[0] == '#' || token[0] == '&')
+			{
+				size_t lpos = token.size() - 1;
+				if (token[lpos] == ',')
+					token = token.substr(0, lpos);
+			}
 			_params.push_back(token);
+		}
 	}
 	if (!tmp.empty())
+	{
+		tmp = tmp.substr(1);
 		_params.push_back(tmp);
+	}
 	// IMPRIMIR
 	// std::cout << "Command: " << _commandStr << std::endl;
 	// std::cout << "Params:" << std::endl;
 	// for (size_t i = 0; i < _params.size(); ++i)
 	// {
 	// 	std::cout << _params[i] << std::endl;
-	// 	std::cout << "*" << _params[i] << "*" << std::endl;
+	// 	// std::cout << "*" << _params[i] << "*" << std::endl;
 	// }
 	return;
 }
