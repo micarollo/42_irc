@@ -364,9 +364,9 @@ void Server::disconnectOneClient(int clientFd)
 }
 
 // Channels
-void Server::addChannel(Channel &ch)
+void Server::addChannel(Channel *ch)
 {
-	_channels[ch.getName()] = &ch;
+	_channels[ch->getName()] = ch;
 	return;
 }
 

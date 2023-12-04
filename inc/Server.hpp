@@ -36,7 +36,7 @@ public:
 	std::map<std::string, Channel *> const &getChannels();
 
 	// Setters
-	void addChannel(Channel &ch);
+	void addChannel(Channel *ch);
 
 	// Methods
 	void run(void);

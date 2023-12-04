@@ -10,3 +10,7 @@
 
 JOIN
 - Test JOIN 0 with channels
+- Test joining with clients with nicknames
+- test invitations
+- finish invite only and user limit with banned
+- Channels with memory- delete

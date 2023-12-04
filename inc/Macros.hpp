@@ -42,9 +42,17 @@
 #define RPL_MYINFO(client, servername) (std::string("004 ") + client + " " + servername + " version 3.0")
 
 // PASS
-#define ERR_NEEDMOREPARAMS(srv, cmd, nickName) (":" + srv->getName() + " 461 " + nickName + " " + cmd + " :Not enough parameters")
+#define ERR_NEEDMOREPARAMS(cmd, nickName) (" 461 " + nickName + " " + cmd + " :Not enough parameters")
 #define ERR_ALREADYREGISTRED(srv, cmd, nickName) (":" + srv->getName() + " 462 " + nickName + " " + cmd + ":You may not reregister")
 
 // JOIN
 #define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
 #define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
+#define ERR_USERONCHANNEL(client, nickname, channel) (std::string("443 ") + client + " " + nickname + " " + channel + " :is already on channel")
+#define ERR_BADCHANNELKEY(client, channel) (std::string("475 ") + client + " " + channel + " :Cannot join channel (+k)")
+#define ERR_CHANNELISFULL(client, channel) (std::string("471 ") + client + " " + channel + " :Cannot join channel (+l)")
+#define ERR_INVITEONLYCHAN(client, channel) (std::string("473 ") + client + " " + channel + " :Cannot join channel (+i)")
+
+#define RPL_TOPIC(client, channel, topic) (std::string("332 ") + client + " " + channel + " :" + topic)
+#define RPL_NAMREPLY(client, channel, list) (std::string("353 ") + client + " = " + channel + " :" + list)
+#define RPL_ENDOFNAMES(client, channel) (std::string("366 ") + client + " " + channel + " :End of NAMES list")

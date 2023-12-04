@@ -5,7 +5,7 @@ void Executor::pass()
 
 	if (_cmd->getParams().size() == 0)
 	{
-		_cmd->getClientExec()->sendMsg(ERR_NEEDMOREPARAMS(_srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName()));
+		_cmd->getClientExec()->sendMsg(ERR_NEEDMOREPARAMS(_cmd->getCommandStr(), _cmd->getClientExec()->getNickName()));
 		return;
 	}
 

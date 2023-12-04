@@ -6,12 +6,14 @@ Channel::Channel(void)
 	return;
 }
 
-Channel::Channel(std::string name, Client &founderClient)
+Channel::Channel(std::string name, Client &founderClient, std::string key = "")
 {
-	_name = name,
-	_topic = "",
+	_name = name;
+	_topic = "";
 	_users[founderClient.getNickName()] = &founderClient;
 	_operators[founderClient.getNickName()] = &founderClient;
+	_key = key;
+	_userLimit = -1;
 	return;
 }
 
@@ -24,6 +26,7 @@ Channel::Channel(const Channel &src)
 // Destructors
 Channel::~Channel(void)
 {
+	std::cout << "end line " << _name << std::endl;
 	return;
 }
 
@@ -40,6 +43,11 @@ std::string const &Channel::getName() const
 	return _name;
 }
 
+std::string const &Channel::getTopic() const
+{
+	return _topic;
+}
+
 std::map<std::string, Client *> const &Channel::getUsers() const
 {
 	return _users;
@@ -47,5 +55,27 @@ std::map<std::string, Client *> const &Channel::getUsers() const
 
 std::map<std::string, Client *> const &Channel::getOperators() const
 {
-	return _users;
+	return _operators;
+}
+
+std::map<std::string, Client *> const &Channel::getInvited() const
+{
+	return _invited;
+}
+
+// Setters
+void Channel::addUser(Client *client)
+{
+	_users[client->getNickName()] = client;
+	return;
+}
+
+// Methods
+void Channel::sendMsg(std::string msg)
+{
+	for (std::map<std::string, Client *>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		it->second->sendMsg(msg);
+	}
+	return;
 }
