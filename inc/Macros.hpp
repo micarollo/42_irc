@@ -64,3 +64,6 @@
 // KICK
 #define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
 #define ERR_USERNOTINCHANNEL(client, nick, channel) (std::string("441 ") + client + " " + nick + " " + channel + " :They aren't on that channel")
+
+// CAP
+#define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")

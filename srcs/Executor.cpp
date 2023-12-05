@@ -30,7 +30,7 @@ Server *const &Executor::getSrv() const
 	return _srv;
 }
 
-// Methods
+// Commands
 void Executor::invite()
 {
 	return;
@@ -46,6 +46,7 @@ void Executor::mode()
 	return;
 }
 
+// Methods
 bool Executor::unregisteredClient(Client *client)
 {
 	// tmp

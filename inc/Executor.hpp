@@ -21,6 +21,7 @@ public:
 	~Executor(void);
 
 	// Methods
+	void cap();
 	void pass();
 	void nick();
 	void user();
