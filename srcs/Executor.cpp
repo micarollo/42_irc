@@ -58,7 +58,7 @@ bool Executor::unregisteredClient(Client *client)
 	return false;
 }
 
-bool Executor::illegalParamNb(std::vector<std::string> params, Client *client, int min, int max)
+bool Executor::illegalParamNb(std::vector<std::string> params, Client *client, size_t min, size_t max)
 {
 	if (params.size() >= min && params.size() <= max)
 	{
@@ -69,11 +69,21 @@ bool Executor::illegalParamNb(std::vector<std::string> params, Client *client, i
 	return false;
 }
 
-void Executor::parseChannels(const std::vector<std::string> &params, std::vector<std::string> &channels)
+void Executor::parseCommas(std::string param, std::vector<std::string> &vector)
 {
-	std::istringstream iss(params[0]);
+	std::istringstream iss(param);
 	std::string token;
 
 	while (std::getline(iss, token, ','))
-		channels.push_back(token);
+		vector.push_back(token);
 }
+
+bool Executor::isInvalidChannel(std::string channelName, std::map<std::string, Channel *> channels, Client *client)
+{
+	if (channels.find(channelName) == channels.end())
+	{
+		client->sendMsg(ERR_NOSUCHCHANNEL(client->getUserName(), channelName));
+		return true;
+	}
+	return false;
+};

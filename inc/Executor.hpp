@@ -34,7 +34,7 @@ public:
 
 	// Mehtods
 	bool isNickUsed(std::string nickName);
-	static void parseChannels(const std::vector<std::string> &params, std::vector<std::string> &channels);
+	static void parseCommas(std::string param, std::vector<std::string> &vector);
 
 	// void chanMsg(std::string &chan, Client const *client);
 
@@ -49,7 +49,8 @@ private:
 
 	// Methods
 	bool unregisteredClient(Client *client);
-	bool illegalParamNb(std::vector<std::string> params, Client *client, int min, int max);
+	bool illegalParamNb(std::vector<std::string> params, Client *client, size_t min, size_t max);
+	bool isInvalidChannel(std::string channelName, std::map<std::string, Channel *> channels, Client *client);
 
 	// Attributes
 	Server *_srv;

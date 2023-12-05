@@ -1,19 +1,5 @@
 #include "Executor.hpp"
 
-static void parseKeys(const std::vector<std::string> &params, std::vector<std::string> &keys)
-{
-	if (params.size() < 2)
-		return;
-
-	std::istringstream iss(params[1]);
-	std::string token;
-
-	while (std::getline(iss, token, ','))
-		keys.push_back(token);
-
-	return;
-}
-
 static void leaveAllChannels(Server *_srv, Command *_cmd)
 {
 	std::map<std::string, Channel *> channels = _srv->getChannels();
@@ -83,8 +69,9 @@ static void addNewChannel(Server *srv, std::vector<std::string>::iterator it, Cl
 
 static bool parseChannelsAndKeys(const std::vector<std::string> &params, std::vector<std::string> &channels, std::vector<std::string> &keys, Client *client)
 {
-	Executor::parseChannels(params, channels);
-	parseKeys(params, keys);
+	Executor::parseCommas(params[0], channels);
+	if (params.size() == 2)
+		Executor::parseCommas(params[1], keys);
 
 	if (keys.size() > channels.size())
 	{
