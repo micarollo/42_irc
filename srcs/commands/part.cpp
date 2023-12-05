@@ -2,7 +2,7 @@
 
 void Executor::part()
 {
-	if (unregisteredClient(_cmd->getClientExec()) || illegalParamNb(_cmd->getParams(), _cmd->getClientExec()))
+	if (unregisteredClient(_cmd->getClientExec()) || illegalParamNb(_cmd->getParams(), _cmd->getClientExec(), 1, 1))
 		return;
 
 	std::vector<std::string> channels;

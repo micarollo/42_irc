@@ -49,7 +49,7 @@ private:
 
 	// Methods
 	bool unregisteredClient(Client *client);
-	bool illegalParamNb(std::vector<std::string> params, Client *client);
+	bool illegalParamNb(std::vector<std::string> params, Client *client, int min, int max);
 
 	// Attributes
 	Server *_srv;

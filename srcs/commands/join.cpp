@@ -81,17 +81,6 @@ static void addNewChannel(Server *srv, std::vector<std::string>::iterator it, Cl
 	std::cout << "Create new channel " << newChannel->getName() << std::endl;
 }
 
-static bool illegalParamNbJoin(std::vector<std::string> params, Client *client)
-{
-	if (params.size() == 0 || params.size() > 2)
-	{
-		// tmp
-		client->sendMsg(ERR_NEEDMOREPARAMS("", client->getNickName()));
-		return true;
-	}
-	return false;
-}
-
 static bool parseChannelsAndKeys(const std::vector<std::string> &params, std::vector<std::string> &channels, std::vector<std::string> &keys, Client *client)
 {
 	Executor::parseChannels(params, channels);
@@ -170,7 +159,7 @@ static std::string getChannelKey(std::vector<std::string> keys, std::vector<std:
 
 void Executor::join()
 {
-	if (unregisteredClient(_cmd->getClientExec()) || illegalParamNbJoin(_cmd->getParams(), _cmd->getClientExec()))
+	if (unregisteredClient(_cmd->getClientExec()) || illegalParamNb(_cmd->getParams(), _cmd->getClientExec(), 1, 2))
 		return;
 
 	if ((_cmd->getParams().size() == 1) && (*_cmd->getParams().begin() == "0"))
