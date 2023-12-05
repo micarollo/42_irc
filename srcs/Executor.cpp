@@ -60,7 +60,7 @@ bool Executor::unregisteredClient(Client *client)
 
 bool Executor::illegalParamNb(std::vector<std::string> params, Client *client, size_t min, size_t max)
 {
-	if (params.size() >= min && params.size() <= max)
+	if (params.size() < min || params.size() > max)
 	{
 		// tmp
 		client->sendMsg(ERR_NEEDMOREPARAMS("", client->getNickName()));
