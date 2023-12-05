@@ -1,14 +1,5 @@
 #include "Executor.hpp"
 
-static void parseChannels(const std::vector<std::string> &params, std::vector<std::string> &channels)
-{
-	std::istringstream iss(params[0]);
-	std::string token;
-
-	while (std::getline(iss, token, ','))
-		channels.push_back(token);
-}
-
 static void parseKeys(const std::vector<std::string> &params, std::vector<std::string> &keys)
 {
 	if (params.size() < 2)
@@ -90,19 +81,7 @@ static void addNewChannel(Server *srv, std::vector<std::string>::iterator it, Cl
 	std::cout << "Create new channel " << newChannel->getName() << std::endl;
 }
 
-static bool unregisteredClient(Client *client)
-{
-	// tmp
-	(void)client;
-	// if (client->getStatus() == PRE_REGISTER)
-	// {
-	// 	client->sendMsg(ERR_NOTREGISTERED(client->getUserName()));
-	// 	return true;
-	// }
-	return false;
-}
-
-static bool illegalParamNb(std::vector<std::string> params, Client *client)
+static bool illegalParamNbJoin(std::vector<std::string> params, Client *client)
 {
 	if (params.size() == 0 || params.size() > 2)
 	{
@@ -115,7 +94,7 @@ static bool illegalParamNb(std::vector<std::string> params, Client *client)
 
 static bool parseChannelsAndKeys(const std::vector<std::string> &params, std::vector<std::string> &channels, std::vector<std::string> &keys, Client *client)
 {
-	parseChannels(params, channels);
+	Executor::parseChannels(params, channels);
 	parseKeys(params, keys);
 
 	if (keys.size() > channels.size())
@@ -191,7 +170,7 @@ static std::string getChannelKey(std::vector<std::string> keys, std::vector<std:
 
 void Executor::join()
 {
-	if (unregisteredClient(_cmd->getClientExec()) || illegalParamNb(_cmd->getParams(), _cmd->getClientExec()))
+	if (unregisteredClient(_cmd->getClientExec()) || illegalParamNbJoin(_cmd->getParams(), _cmd->getClientExec()))
 		return;
 
 	if ((_cmd->getParams().size() == 1) && (*_cmd->getParams().begin() == "0"))

@@ -312,6 +312,11 @@ void Server::executeOneCommand(Command &cmd)
 		executor.mode();
 		break;
 	}
+	case (PART):
+	{
+		executor.part();
+		break;
+	}
 	default:
 	{
 		// tmp

@@ -14,3 +14,7 @@ JOIN
 - test invitations
 - finish invite only and user limit with banned
 - Channels with memory- delete
+
+PART
+- check if message is correct? should it be nickname or hostname?
+- test

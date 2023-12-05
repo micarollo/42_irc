@@ -32,7 +32,10 @@ public:
 	void mode();
 	void part();
 
+	// Mehtods
 	bool isNickUsed(std::string nickName);
+	static void parseChannels(const std::vector<std::string> &params, std::vector<std::string> &channels);
+
 	// void chanMsg(std::string &chan, Client const *client);
 
 private:
@@ -43,6 +46,10 @@ private:
 
 	// Getters
 	Server *const &getSrv() const;
+
+	// Methods
+	bool unregisteredClient(Client *client);
+	bool illegalParamNb(std::vector<std::string> params, Client *client);
 
 	// Attributes
 	Server *_srv;

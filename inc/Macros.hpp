@@ -56,3 +56,7 @@
 #define RPL_TOPIC(client, channel, topic) (std::string("332 ") + client + " " + channel + " :" + topic)
 #define RPL_NAMREPLY(client, channel, list) (std::string("353 ") + client + " = " + channel + " :" + list)
 #define RPL_ENDOFNAMES(client, channel) (std::string("366 ") + client + " " + channel + " :End of NAMES list")
+
+// PART
+#define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
+#define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " + channel + " :You're not on that channel")
