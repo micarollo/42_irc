@@ -18,7 +18,7 @@ SRCS				= main.cpp\
 						commands/privmsg.cpp\
 						commands/join.cpp\
 						commands/part.cpp\
-						commands/utils.cpp
+						commands/kick.cpp
 
 MK					= Makefile
 
