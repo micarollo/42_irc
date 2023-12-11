@@ -103,13 +103,13 @@ void Command::parseCommand(std::string const &msg)
 		_params.push_back(tmp);
 	}
 	// IMPRIMIR
-	std::cout << "Command: " << _commandStr << std::endl;
-	std::cout << "Params:" << std::endl;
-	for (size_t i = 0; i < _params.size(); ++i)
-	{
-		std::cout << _params[i] << std::endl;
-		// std::cout << "*" << _params[i] << "*" << std::endl;
-	}
+	// std::cout << "Command: " << _commandStr << std::endl;
+	// std::cout << "Params:" << std::endl;
+	// for (size_t i = 0; i < _params.size(); ++i)
+	// {
+	// 	std::cout << _params[i] << std::endl;
+	// 	// std::cout << "*" << _params[i] << "*" << std::endl;
+	// }
 	return;
 }
 
