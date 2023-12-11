@@ -5,7 +5,6 @@
 #define REGISTERED 2
 
 // Reply Codes
-#define ERR_NOSUCHNICK 401
 #define ERR_NOTEXTTOSEND 412
 
 // Commands implemented
@@ -52,3 +51,6 @@
 //ERR USER
 # define ERR_NEEDMOREPARAMS(client, command) (std::string("461 ") + client + " " + command + std::string(" :Not enough parameters"))
 # define ERR_ALREADYREGISTERED(client) (std::string("462 ") + client + " :You may not reregister")
+
+//PRIVMSG
+# define ERR_NOSUCHNICK(client, nickname) (std::string("401 ") + client + " " + nickname + " :No suck nick/channel")

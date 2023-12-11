@@ -14,6 +14,13 @@ public:
 	// Constructors and Destructors
 	~Channel(void);
 
+	// Getters
+	std::string const &getName() const;
+	std::map<std::string, Client *> const &getUsers();
+
+	// Methods
+	void sendMessage(Client const *client, std::string const &msg);
+
 private:
 	// Cannonical Form
 	Channel(void);
