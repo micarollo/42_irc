@@ -11,7 +11,6 @@ SRCS				= main.cpp\
 						Parser.cpp\
 						Command.cpp\
 						Executor.cpp\
-						utils.cpp\
 						ErrorHandling.cpp\
 						commands/user.cpp\
 						commands/pass.cpp\

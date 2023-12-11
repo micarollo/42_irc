@@ -2,11 +2,11 @@
 
 void Executor::privmsg()
 {
-	if (_cmd->getParams().size() < 2)
-	{
-		// ErrorHandling::prepareMsg(ERR_NOTEXTTOSEND, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
-		return ;
-	}
+	// if (_cmd->getParams().size() < 2)
+	// {
+	// 	ErrorHandling::prepareMsg(ERR_NOTEXTTOSEND, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+	// 	return ;
+	// }
 	// for (unsigned int i = 0; i < _cmd->getParams().size() - 1; i++)
 	// {
 	// 	if (_cmd->getParams()[i][0] == '#' || _cmd->getParams()[i][0] == '&')
@@ -27,6 +27,6 @@ void Executor::privmsg()
 // 	{
 // 		//buscar client en channel para ver si esta dentro?
 // 		//ver si tiene permisos para enviar msg?
-// 		//esta baneado? 
+// 		//esta baneado?
 // 	}
-// }	
+// }
