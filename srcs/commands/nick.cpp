@@ -4,7 +4,7 @@ static bool isNickAllowed(std::string nickName);
 
 void Executor::nick()
 {
-	// std::string oldNickName;
+	std::string oldNickName;
 	if (_cmd->getParams().size() > 1 || _cmd->getParams()[0] == "")
 	{
 		_cmd->getClientExec()->sendMsg(ERR_NONICKNAMEGIVEN(_cmd->getClientExec()->getUserName()));
