@@ -4,9 +4,6 @@
 #define PRE_REGISTER 1
 #define REGISTERED 2
 
-// Reply Codes
-#define ERR_NOTEXTTOSEND 412
-
 // Commands implemented
 #define JOIN 1
 #define CAP 2
@@ -20,7 +17,7 @@
 #define MODE 10
 
 // Connection configurations
-#define MAX_NB_CLIENTS 2
+#define MAX_NB_CLIENTS 4
 #define MILISECONDS_BETWEEN_POLL 1
 #define BUFFER_SIZE 4096
 #define MAX_PORT 65535
@@ -54,3 +51,5 @@
 
 //PRIVMSG
 # define ERR_NOSUCHNICK(client, nickname) (std::string("401 ") + client + " " + nickname + " :No suck nick/channel")
+# define ERR_NOTEXTTOSEND(client) (std::string("412 ") + client + " :No text to send")
+# define ERR_NORECIPIENT(client, command) (std::string("411 ") + client + " :No recipient given " + command)

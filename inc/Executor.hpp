@@ -32,7 +32,7 @@ public:
 
 	bool isNickUsed(std::string nickName);
 	void chanMsg(std::string &chan, Client const *client, std::string const &msg);
-	void userMsg(std::string &name, Client const *client, std::string const &msg);
+	void userMsg(std::string const &name, Client const *client, std::string const &msg);
 	void sendClientMsg(std::string nickName, std::string const &msg);
 
 private:

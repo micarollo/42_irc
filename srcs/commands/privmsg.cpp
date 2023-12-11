@@ -8,10 +8,15 @@ void Executor::privmsg()
 {
 	std::vector<std::string> args;
 
-	if (_cmd->getParams().size() < 2)
+	if (_cmd->getParams().size() < 2 || _cmd->getParams()[0][0] == ':')
 	{
-		// ErrorHandling::prepareMsg(ERR_NOTEXTTOSEND, _srv, _cmd->getCommandStr(), _cmd->getClientExec()->getNickName());
+		_cmd->getClientExec()->sendMsg(ERR_NORECIPIENT(_cmd->getClientExec()->getUserName(), _cmd->getCommandStr()));
 		return;
+	}
+	if (_cmd->getParams().back()[0] != ':')
+	{
+		_cmd->getClientExec()->sendMsg(ERR_NOTEXTTOSEND(_cmd->getClientExec()->getUserName()));
+		return ;
 	}
 	args = splitArgs(_cmd->getParams()[0]);
 	for (size_t i = 0; i < args.size(); ++i)
@@ -45,21 +50,21 @@ void Executor::chanMsg(std::string &chan, Client const *client, std::string cons
 	{
 		if (it->second->getName() == chan)
 		{
-			// send chan msg to all clients in that chan
+			// send msg to all clients in that chan
 			it->second->sendMessage(client, msg);
 		}
 	}
 }
 
-void Executor::userMsg(std::string &name, Client const *client, std::string const &msg)
+void Executor::userMsg(std::string const &name, Client const *client, std::string const &msg)
 {
 	(void)client;
-	// if (!isNickUsed(name))
-	// 	_cmd->getClientExec()->sendMsg(ERR_NOSUCHNICK(_cmd->getClientExec(), name));
-	// else
-	// {
+	if (!isNickUsed(name))
+		_cmd->getClientExec()->sendMsg(ERR_NOSUCHNICK(_cmd->getClientExec()->getUserName(), name));
+	else
+	{
 		sendClientMsg(name, msg);
-	// }
+	}
 }
 
 void Executor::sendClientMsg(std::string nickName, std::string const &msg)
@@ -69,6 +74,6 @@ void Executor::sendClientMsg(std::string nickName, std::string const &msg)
 	for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		if (it->second->getNickName() == nickName)
-			it->second->sendMsg(msg);
+			it->second->sendMsg(msg.substr(1));
 	}
 }
