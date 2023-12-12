@@ -19,6 +19,7 @@
 #define INVITE 8
 #define TOPIC 9
 #define MODE 10
+#define PART 11
 
 // Connection configurations
 #define MAX_NB_CLIENTS 2
@@ -52,3 +53,26 @@
 //ERR USER
 # define ERR_NEEDMOREPARAMS(client, command) (std::string("461 ") + client + " " + command + std::string(" :Not enough parameters"))
 # define ERR_ALREADYREGISTERED(client) (std::string("462 ") + client + " :You may not reregister")
+
+// JOIN
+#define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
+#define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
+#define ERR_USERONCHANNEL(client, nickname, channel) (std::string("443 ") + client + " " + nickname + " " + channel + " :is already on channel")
+#define ERR_BADCHANNELKEY(client, channel) (std::string("475 ") + client + " " + channel + " :Cannot join channel (+k)")
+#define ERR_CHANNELISFULL(client, channel) (std::string("471 ") + client + " " + channel + " :Cannot join channel (+l)")
+#define ERR_INVITEONLYCHAN(client, channel) (std::string("473 ") + client + " " + channel + " :Cannot join channel (+i)")
+
+#define RPL_TOPIC(client, channel, topic) (std::string("332 ") + client + " " + channel + " :" + topic)
+#define RPL_NAMREPLY(client, channel, list) (std::string("353 ") + client + " = " + channel + " :" + list)
+#define RPL_ENDOFNAMES(client, channel) (std::string("366 ") + client + " " + channel + " :End of NAMES list")
+
+// PART
+#define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
+#define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " + channel + " :You're not on that channel")
+
+// KICK
+#define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
+#define ERR_USERNOTINCHANNEL(client, nick, channel) (std::string("441 ") + client + " " + nick + " " + channel + " :They aren't on that channel")
+
+// CAP
+#define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")
