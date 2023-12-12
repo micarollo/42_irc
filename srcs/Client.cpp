@@ -11,7 +11,7 @@ Client::Client(int fd, sockaddr_in addr)
 	_fd = fd;
 	_status = PRE_REGISTER;
 	_password = "";
-	_nickName = "";
+	_nickName = "*";
 	_userName = "";
 	_realName = "";
 	_hostname = inet_ntoa(addr.sin_addr);
@@ -99,7 +99,7 @@ void Client::setStatus(int const &st)
 	return;
 }
 
-//FUNC
+// FUNC
 
 void Client::sendMsg(const std::string &msg)
 {

@@ -30,18 +30,7 @@ Server *const &Executor::getSrv() const
 	return _srv;
 }
 
-// Methods
-
-void Executor::join()
-{
-	return;
-}
-
-void Executor::kick()
-{
-	return;
-}
-
+// Commands
 void Executor::invite()
 {
 	return;
@@ -56,3 +45,46 @@ void Executor::mode()
 {
 	return;
 }
+
+// Methods
+bool Executor::unregisteredClient(Client *client)
+{
+	// tmp
+	(void)client;
+	// if (client->getStatus() == PRE_REGISTER)
+	// {
+	// 	client->sendMsg(ERR_NOTREGISTERED(client->getUserName()));
+	// 	return true;
+	// }
+	return false;
+}
+
+bool Executor::illegalParamNb(std::vector<std::string> params, Client *client, size_t min, size_t max)
+{
+	if (params.size() < min || params.size() > max)
+	{
+		// tmp
+		client->sendMsg(ERR_NEEDMOREPARAMS("", client->getNickName()));
+		return true;
+	}
+	return false;
+}
+
+void Executor::parseCommas(std::string param, std::vector<std::string> &vector)
+{
+	std::istringstream iss(param);
+	std::string token;
+
+	while (std::getline(iss, token, ','))
+		vector.push_back(token);
+}
+
+bool Executor::isInvalidChannel(std::string channelName, std::map<std::string, Channel *> channels, Client *client)
+{
+	if (channels.find(channelName) == channels.end())
+	{
+		client->sendMsg(ERR_NOSUCHCHANNEL(client->getUserName(), channelName));
+		return true;
+	}
+	return false;
+};
