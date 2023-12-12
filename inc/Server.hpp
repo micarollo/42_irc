@@ -32,6 +32,7 @@ public:
 
 	// Getters
 	std::string const &getName() const;
+	std::string const &getPass() const;
 	std::map<int, Client *> const &getClients();
 	std::map<std::string, Channel *> const &getChannels();
 
