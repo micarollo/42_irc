@@ -16,7 +16,7 @@ void Executor::user()
 	_cmd->getClientExec()->setRealName(_cmd->getParams().back());
 	if (_cmd->getClientExec()->getStatus() == PRE_REGISTER)
 	{
-		if (_cmd->getClientExec()->getNickName() != "*" && _cmd->getClientExec()->getUserName() != "*")
+		if ((_cmd->getClientExec()->getNickName() != "*" && _cmd->getClientExec()->getUserName() != "*") && (!_cmd->getClientExec()->getNickName().empty() && !_cmd->getClientExec()->getUserName().empty()))
 		{
 			if (_cmd->getClientExec()->getPassword() == _srv->getPass())
 			{
