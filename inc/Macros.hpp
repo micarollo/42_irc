@@ -76,3 +76,4 @@
 
 // CAP
 #define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")
+
