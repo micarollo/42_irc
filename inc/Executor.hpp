@@ -2,6 +2,7 @@
 #define __EXECUTOR_HPP__
 
 // Libraries
+#include <sstream>
 
 // Classes
 #include "Server.hpp"
@@ -20,6 +21,7 @@ public:
 	~Executor(void);
 
 	// Methods
+	void cap();
 	void pass();
 	void nick();
 	void user();
@@ -29,8 +31,12 @@ public:
 	void invite();
 	void topic();
 	void mode();
+	void part();
 
+	// Mehtods
 	bool isNickUsed(std::string nickName);
+	static void parseCommas(std::string param, std::vector<std::string> &vector);
+
 	// void chanMsg(std::string &chan, Client const *client);
 
 private:
@@ -41,6 +47,11 @@ private:
 
 	// Getters
 	Server *const &getSrv() const;
+
+	// Methods
+	bool unregisteredClient(Client *client);
+	bool illegalParamNb(std::vector<std::string> params, Client *client, size_t min, size_t max);
+	bool isInvalidChannel(std::string channelName, std::map<std::string, Channel *> channels, Client *client);
 
 	// Attributes
 	Server *_srv;

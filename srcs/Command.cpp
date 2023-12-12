@@ -83,7 +83,7 @@ void Command::parseCommand(std::string const &msg)
 		if (flag)
 		{
 			if (!tmp.empty())
-                tmp.append(" ");
+				tmp.append(" ");
 			tmp.append(token);
 		}
 		else
@@ -135,6 +135,8 @@ int Command::checkCommand(std::string const &token)
 		return TOPIC;
 	else if (token == "MODE")
 		return MODE;
+	else if (token == "PART")
+		return PART;
 	else
 		return 0;
 }

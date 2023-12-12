@@ -1,8 +1,19 @@
-- tv struct
 - when failing to accept new client connection should shut down all the program?
-- handle _fe
 - protect close
-- investigate command part
-- format reply code with 001
 
 - client hostname
+
+
+JOIN
+- Test JOIN 0 with channels
+- Test joining with clients with nicknames
+- test invitations
+- finish invite only and user limit with banned
+- Channels with memory- delete
+
+PART
+- check if message is correct? should it be nickname or hostname?
+- test
+
+KICK
+- test
