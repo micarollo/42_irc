@@ -49,13 +49,11 @@ void Executor::mode()
 // Methods
 bool Executor::unregisteredClient(Client *client)
 {
-	// tmp
-	(void)client;
-	// if (client->getStatus() == PRE_REGISTER)
-	// {
-	// 	client->sendMsg(ERR_NOTREGISTERED(client->getUserName()));
-	// 	return true;
-	// }
+	if (client->getStatus() == PRE_REGISTER)
+	{
+		client->sendMsg(ERR_NOTREGISTERED(client->getUserName()));
+		return true;
+	}
 	return false;
 }
 
@@ -86,5 +84,6 @@ bool Executor::isInvalidChannel(std::string channelName, std::map<std::string, C
 		client->sendMsg(ERR_NOSUCHCHANNEL(client->getUserName(), channelName));
 		return true;
 	}
+
 	return false;
 };

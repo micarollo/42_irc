@@ -17,6 +17,7 @@ public:
 
 	// Getters
 	std::string const &getName() const;
+	std::string const &getKey() const;
 	std::string const &getTopic() const;
 	std::map<std::string, Client *> const &getUsers() const;
 	std::map<std::string, Client *> const &getOperators() const;

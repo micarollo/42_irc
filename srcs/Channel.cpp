@@ -43,6 +43,11 @@ std::string const &Channel::getName() const
 	return _name;
 }
 
+std::string const &Channel::getKey() const
+{
+	return _key;
+}
+
 std::string const &Channel::getTopic() const
 {
 	return _topic;

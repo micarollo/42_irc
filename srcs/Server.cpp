@@ -29,6 +29,7 @@ Server::Server(const Server &src)
 Server::~Server(void)
 {
 	deleteClients();
+	deleteChannels();
 	return;
 }
 
@@ -381,6 +382,30 @@ void Server::addChannel(Channel *ch)
 {
 	_channels[ch->getName()] = ch;
 	return;
+}
+
+void Server::deleteOneChannel(std::string channelName)
+{
+	std::map<std::string, Channel *>::iterator channelIt = _channels.find(channelName);
+	if (channelIt != _channels.end())
+	{
+		delete channelIt->second;
+		_channels.erase(channelName);
+	}
+
+	return;
+}
+
+void Server::deleteChannels(void)
+{
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it->second)
+		{
+			delete it->second;
+			it->second = NULL;
+		}
+	}
 }
 
 // Utils

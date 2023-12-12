@@ -116,7 +116,7 @@ static bool notAllowedInChannel(Channel *channel, Client *client)
 
 static bool badChannelKey(Channel *channel, Client *client, std::string key)
 {
-	if (channel->getName() != key)
+	if (channel->getKey() != key)
 	{
 		client->sendMsg(ERR_BADCHANNELKEY(client->getUserName(), channel->getName()));
 		return true;
