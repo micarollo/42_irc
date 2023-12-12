@@ -44,15 +44,18 @@ void Executor::kick()
 	for (std::vector<std::string>::iterator it = usersVec.begin(); it != usersVec.end(); it++)
 	{
 		std::string clientToKick = *it;
-		if (users.find(channelName) == users.end())
+		if (users.find(clientToKick) == users.end())
 		{
-			ERR_USERNOTINCHANNEL(client->getUserName(), clientToKick, channelName);
+			client->sendMsg(ERR_USERNOTINCHANNEL(client->getUserName(), clientToKick, channelName));
 			continue;
 		}
 
 		channel->sendMsg(client->getUserName() + " KICK " + channelName + " " + clientToKick + " " + comment);
 		channel->removeUser(clientToKick);
 		channel->removeOperator(clientToKick);
+
+		if (channel->getUsers().size() == 0)
+			_srv->deleteOneChannel(channelName);
 	}
 	return;
 }

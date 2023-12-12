@@ -11,8 +11,5 @@ JOIN
 PART
 - check if message is correct? should it be nickname or hostname?
 
-KICK
-- test
-
-- when disconnect client remove it from channels?
 - uniform nickname and username
+- command not implemented

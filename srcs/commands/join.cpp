@@ -49,7 +49,7 @@ static std::string createUsersStr(std::map<std::string, Client *> users)
 
 static void warnNewUser(Channel *channel, Client *client)
 {
-	channel->sendMsg(client->getNickName() + " is joining the channel");
+	channel->sendMsg(client->getNickName() + " is joining the channel " + channel->getName());
 	if (channel->getTopic() != "")
 		client->sendMsg(RPL_TOPIC(client->getUserName(), channel->getName(), channel->getTopic()));
 	std::string usersStr = createUsersStr(channel->getUsers());

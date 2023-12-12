@@ -373,6 +373,7 @@ void Server::disconnectOneClient(int clientFd)
 	}
 
 	close(clientFd);
+	removeFromChannels(_clients[clientFd]);
 	delete _clients[clientFd];
 	_clients.erase(clientFd);
 }
@@ -406,6 +407,23 @@ void Server::deleteChannels(void)
 			it->second = NULL;
 		}
 	}
+}
+
+void Server::removeFromChannels(Client *client)
+{
+	std::string clientNickName = client->getNickName();
+	std::vector<std::string> chToDel;
+
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		it->second->removeUser(clientNickName);
+		it->second->removeOperator(clientNickName);
+		if (it->second->getUsers().size() == 0)
+			chToDel.push_back(it->first);
+	}
+
+	for (std::vector<std::string>::iterator it = chToDel.begin(); it != chToDel.end(); it++)
+		deleteOneChannel(*it);
 }
 
 // Utils

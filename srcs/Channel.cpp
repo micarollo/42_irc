@@ -26,7 +26,6 @@ Channel::Channel(const Channel &src)
 // Destructors
 Channel::~Channel(void)
 {
-	std::cout << "end line " << _name << std::endl;
 	return;
 }
 

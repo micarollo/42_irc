@@ -72,6 +72,7 @@ private:
 	void deleteFds(void);
 	void disconnectOneClient(int clientFd);
 	void deleteChannels(void);
+	void removeFromChannels(Client *client);
 
 	// Attributes
 	std::string _name;
