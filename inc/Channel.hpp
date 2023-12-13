@@ -17,10 +17,6 @@ public:
 
 	// Getters
 	std::string const &getName() const;
-	std::map<std::string, Client *> const &getUsers();
-
-	// Methods
-	void sendMessage(Client const *client, std::string const &msg);
 	std::string const &getTopic() const;
 	std::map<std::string, Client *> const &getUsers() const;
 	std::map<std::string, Client *> const &getOperators() const;
@@ -33,6 +29,7 @@ public:
 
 	// Methods
 	void sendMsg(std::string msg);
+	void sendMessage(Client const *client, std::string const &msg);
 
 private:
 	// Cannonical Form

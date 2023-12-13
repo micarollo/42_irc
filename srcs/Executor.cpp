@@ -31,11 +31,6 @@ Server *const &Executor::getSrv() const
 }
 
 // Commands
-void Executor::invite()
-{
-	return;
-}
-
 void Executor::topic()
 {
 	return;

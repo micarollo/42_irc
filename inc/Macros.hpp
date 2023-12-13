@@ -57,8 +57,8 @@
 
 // INVITE
 # define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " +  channel + " :No such channel")
-# define ERR_USERONCHANNEL(client, nick, channel) (std::string("443 ") + client + " " +  nick + " " + channel + " :is already on channel")
 # define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " +  channel + " :You're not on that channel")
+
 // JOIN
 #define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
 #define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
