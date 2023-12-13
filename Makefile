@@ -16,7 +16,14 @@ SRCS				= main.cpp\
 						commands/pass.cpp\
 						commands/nick.cpp\
 						commands/privmsg.cpp\
+<<<<<<< HEAD
 						commands/invite.cpp\
+=======
+						commands/join.cpp\
+						commands/part.cpp\
+						commands/kick.cpp\
+						commands/cap.cpp
+>>>>>>> main
 
 MK					= Makefile
 

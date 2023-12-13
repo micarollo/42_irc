@@ -271,7 +271,10 @@ void Server::executeOneCommand(Command &cmd)
 	switch (cmd.getCommand())
 	{
 	case (CAP):
+	{
+		executor.cap();
 		break;
+	}
 	case (PASS):
 	{
 		executor.pass();
@@ -315,6 +318,11 @@ void Server::executeOneCommand(Command &cmd)
 	case (MODE):
 	{
 		executor.mode();
+		break;
+	}
+	case (PART):
+	{
+		executor.part();
 		break;
 	}
 	default:
@@ -366,6 +374,13 @@ void Server::disconnectOneClient(int clientFd)
 	close(clientFd);
 	delete _clients[clientFd];
 	_clients.erase(clientFd);
+}
+
+// Channels
+void Server::addChannel(Channel *ch)
+{
+	_channels[ch->getName()] = ch;
+	return;
 }
 
 // Utils
