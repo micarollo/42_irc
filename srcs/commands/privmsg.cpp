@@ -50,6 +50,8 @@ void Executor::chanMsg(std::string &chan, Client const *client, std::string cons
 	{
 		if (it->second->getName() == chan)
 		{
+			// ERR_CANNOTSENDTOCHAN falta este error con MODES
+			std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + chan + " " + msg;
 			// send msg to all clients in that chan
 			it->second->sendMessage(client, msg);
 		}
@@ -63,7 +65,8 @@ void Executor::userMsg(std::string const &name, Client const *client, std::strin
 		_cmd->getClientExec()->sendMsg(ERR_NOSUCHNICK(_cmd->getClientExec()->getUserName(), name));
 	else
 	{
-		sendClientMsg(name, msg);
+		std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + name + " " + msg;
+		sendClientMsg(name, newMsg);
 	}
 }
 
@@ -74,6 +77,6 @@ void Executor::sendClientMsg(std::string nickName, std::string const &msg)
 	for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		if (it->second->getNickName() == nickName)
-			it->second->sendMsg(msg.substr(1));
+			it->second->sendMsg(msg);
 	}
 }
