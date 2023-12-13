@@ -25,7 +25,10 @@ void Executor::invite()
                 if (it2->second->getNickName() == _cmd->getClientExec()->getNickName())
                 {
                     // agregarlo
+                    // _channels[ch->getName()] = ch;
+                    it->second->addInvited(it2->second);
                     //RPL_INVITED? MSG?
+                    
                 }
                 else
                 {

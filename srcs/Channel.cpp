@@ -70,6 +70,12 @@ void Channel::addUser(Client *client)
 	return;
 }
 
+void Channel::addInvited(Client *client)
+{
+	_invited[client->getNickName()] = client;
+	return;
+}
+
 void Channel::removeUser(std::string nickName)
 {
 	if (_users.find(nickName) != _users.end())

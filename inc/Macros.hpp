@@ -58,6 +58,7 @@
 // INVITE
 # define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " +  channel + " :No such channel")
 # define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " +  channel + " :You're not on that channel")
+# define RPL_INVITING(client, nickname, channel) (std::string("341 ") + client + " " + nickname + " " + channel)
 
 // JOIN
 #define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")

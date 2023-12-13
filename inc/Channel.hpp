@@ -24,6 +24,7 @@ public:
 
 	// Setters
 	void addUser(Client *client);
+	void addInvited(Client *client);
 	void removeUser(std::string nickName);
 	void removeOperator(std::string nickName);
 
