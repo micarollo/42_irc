@@ -53,7 +53,7 @@ void Executor::chanMsg(std::string &chan, Client const *client, std::string cons
 			// ERR_CANNOTSENDTOCHAN falta este error con MODES
 			std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + chan + " " + msg;
 			// send msg to all clients in that chan
-			it->second->sendMessage(client, msg);
+			it->second->sendMessage(client, newMsg);
 		}
 	}
 }
