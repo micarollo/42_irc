@@ -29,6 +29,7 @@ Server::Server(const Server &src)
 Server::~Server(void)
 {
 	deleteClients();
+	deleteChannels();
 	return;
 }
 
@@ -372,6 +373,7 @@ void Server::disconnectOneClient(int clientFd)
 	}
 
 	close(clientFd);
+	removeFromChannels(_clients[clientFd]);
 	delete _clients[clientFd];
 	_clients.erase(clientFd);
 }
@@ -381,6 +383,47 @@ void Server::addChannel(Channel *ch)
 {
 	_channels[ch->getName()] = ch;
 	return;
+}
+
+void Server::deleteOneChannel(std::string channelName)
+{
+	std::map<std::string, Channel *>::iterator channelIt = _channels.find(channelName);
+	if (channelIt != _channels.end())
+	{
+		delete channelIt->second;
+		_channels.erase(channelName);
+	}
+
+	return;
+}
+
+void Server::deleteChannels(void)
+{
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it->second)
+		{
+			delete it->second;
+			it->second = NULL;
+		}
+	}
+}
+
+void Server::removeFromChannels(Client *client)
+{
+	std::string clientNickName = client->getNickName();
+	std::vector<std::string> chToDel;
+
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		it->second->removeUser(clientNickName);
+		it->second->removeOperator(clientNickName);
+		if (it->second->getUsers().size() == 0)
+			chToDel.push_back(it->first);
+	}
+
+	for (std::vector<std::string>::iterator it = chToDel.begin(); it != chToDel.end(); it++)
+		deleteOneChannel(*it);
 }
 
 // Utils
