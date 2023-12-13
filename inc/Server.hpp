@@ -38,6 +38,7 @@ public:
 
 	// Setters
 	void addChannel(Channel *ch);
+	void deleteOneChannel(std::string channelName);
 
 	// Methods
 	void run(void);
@@ -70,6 +71,8 @@ private:
 	void deleteClients(void);
 	void deleteFds(void);
 	void disconnectOneClient(int clientFd);
+	void deleteChannels(void);
+	void removeFromChannels(Client *client);
 
 	// Attributes
 	std::string _name;

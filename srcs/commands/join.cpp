@@ -49,7 +49,7 @@ static std::string createUsersStr(std::map<std::string, Client *> users)
 
 static void warnNewUser(Channel *channel, Client *client)
 {
-	channel->sendMsg(client->getNickName() + " is joining the channel");
+	channel->sendMsg(client->getNickName() + " is joining the channel " + channel->getName());
 	if (channel->getTopic() != "")
 		client->sendMsg(RPL_TOPIC(client->getUserName(), channel->getName(), channel->getTopic()));
 	std::string usersStr = createUsersStr(channel->getUsers());
@@ -116,7 +116,7 @@ static bool notAllowedInChannel(Channel *channel, Client *client)
 
 static bool badChannelKey(Channel *channel, Client *client, std::string key)
 {
-	if (channel->getName() != key)
+	if (channel->getKey() != key)
 	{
 		client->sendMsg(ERR_BADCHANNELKEY(client->getUserName(), channel->getName()));
 		return true;

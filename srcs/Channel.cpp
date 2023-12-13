@@ -26,7 +26,6 @@ Channel::Channel(const Channel &src)
 // Destructors
 Channel::~Channel(void)
 {
-	std::cout << "end line " << _name << std::endl;
 	return;
 }
 
@@ -41,6 +40,11 @@ Channel &Channel::operator=(const Channel &rhs)
 std::string const &Channel::getName() const
 {
 	return _name;
+}
+
+std::string const &Channel::getKey() const
+{
+	return _key;
 }
 
 std::string const &Channel::getTopic() const
