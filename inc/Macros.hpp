@@ -83,3 +83,5 @@
 // CAP
 #define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")
 
+// MODES
+# define RPL_CHANNELMODEIS(client, channel, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + modestring + " " + arguments)

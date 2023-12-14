@@ -22,6 +22,7 @@ public:
 	std::map<std::string, Client *> const &getUsers() const;
 	std::map<std::string, Client *> const &getOperators() const;
 	std::map<std::string, Client *> const &getInvited() const;
+	std::string getModes();
 
 	// Setters
 	void addUser(Client *client);
@@ -47,6 +48,12 @@ private:
 	std::map<std::string, Client *> _operators;
 	std::map<std::string, Client *> _invited;
 	int _userLimit;
+
+	bool _i;
+    bool _t;
+    bool _k;
+    bool _o;
+    bool _l;
 };
 
 #endif

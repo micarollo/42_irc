@@ -20,7 +20,8 @@ SRCS				= main.cpp\
 						commands/join.cpp\
 						commands/part.cpp\
 						commands/kick.cpp\
-						commands/cap.cpp
+						commands/cap.cpp\
+						commands/mode.cpp
 
 MK					= Makefile
 

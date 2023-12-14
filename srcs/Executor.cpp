@@ -36,11 +36,6 @@ void Executor::topic()
 	return;
 }
 
-void Executor::mode()
-{
-	return;
-}
-
 // Methods
 bool Executor::unregisteredClient(Client *client)
 {

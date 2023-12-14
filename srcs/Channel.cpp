@@ -14,6 +14,11 @@ Channel::Channel(std::string name, Client &founderClient, std::string key = "")
 	_operators[founderClient.getNickName()] = &founderClient;
 	_key = key;
 	_userLimit = -1;
+	_i = false;
+	_t = false;
+	_k = false;
+	_o = false;
+	_l = false;
 	return;
 }
 
@@ -65,6 +70,23 @@ std::map<std::string, Client *> const &Channel::getOperators() const
 std::map<std::string, Client *> const &Channel::getInvited() const
 {
 	return _invited;
+}
+
+std::string Channel::getModes()
+{
+	std::string mod = "+";
+
+	if (_i)
+		mod.append("i");
+	if (_t)
+		mod.append("t");
+	if (_k)
+		mod.append("k");
+	if (_o)
+		mod.append("o");
+	if (_l)
+		mod.append("l");
+	return mod;
 }
 
 // Setters
