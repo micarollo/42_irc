@@ -33,9 +33,18 @@ std::map<std::string, std::string> checkModes(std::string s)
 {
     std::map<std::string, std::string> mod;
 
-    (void)s;
-    mod["+"] = "aik";
-    mod["-"] = "b";
+    mod["+"] = "";
+    mod["-"] = "";
+    for (char c : s)
+    {
+        if (std::isalpha(c) && std::string("itkol").find(c) != std::string::npos)
+        {
+            if (s[0] == '+')
+                mod["+"] += c;
+            if (s[0] == '-')
+                mod["-"] += c;
+        }
+    }
     std::cout << mod["+"] << std::endl;
     std::cout << mod["-"] << std::endl;
     return mod;
