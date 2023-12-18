@@ -19,7 +19,11 @@ void Executor::mode()
                 _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes, ""));
                 return;
             }
-            checkModes(_cmd->getParams()[1]);
+            std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
+            if (modes["+"].size() > 1)
+                addModes(modes["+"]);
+            if (modes["-"].size() > 1)
+                removeModes(modes["-"]); 
 		}
         else
         {
@@ -35,17 +39,23 @@ std::map<std::string, std::string> checkModes(std::string s)
 
     mod["+"] = "";
     mod["-"] = "";
-    for (char c : s)
+    for (unsigned long i = 0; i < s.length(); i++)
     {
-        if (std::isalpha(c) && std::string("itkol").find(c) != std::string::npos)
+        if (std::isalpha(s[i]) && std::string("itkol").find(s[i]) != std::string::npos)
         {
             if (s[0] == '+')
-                mod["+"] += c;
+            {
+                if (mod["+"].find(s[i]) == std::string::npos)
+                    mod["+"] += s[i];
+            }
             if (s[0] == '-')
-                mod["-"] += c;
+            {
+                if (mod["-"].find(s[i]) == std::string::npos)
+                    mod["-"] += s[i];
+            }
         }
     }
-    std::cout << mod["+"] << std::endl;
-    std::cout << mod["-"] << std::endl;
+    std::cout << "mod +: " << mod["+"] << std::endl;
+    std::cout << "mod -: " << mod["-"] << std::endl;
     return mod;
 }

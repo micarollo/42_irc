@@ -139,3 +139,13 @@ void Channel::sendMessage(Client const *client, std::string const &msg)
 			tmp->sendMsg(msg);
 	}
 }
+
+void Channel::addModes(std::string modes)
+{
+	
+}
+
+void Channel::removeModes(std::string modes)
+{
+
+}

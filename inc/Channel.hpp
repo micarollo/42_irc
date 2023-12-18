@@ -33,6 +33,8 @@ public:
 	// Methods
 	void sendMsg(std::string msg);
 	void sendMessage(Client const *client, std::string const &msg);
+	void addModes(std::string modes);
+	void removeModes(std::string modes);
 
 private:
 	// Cannonical Form
