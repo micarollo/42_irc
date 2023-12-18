@@ -45,3 +45,5 @@ void Executor::invite()
         }
     }
 }
+
+// ERR_INVITEONLYCHAN chequear

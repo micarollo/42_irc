@@ -102,6 +102,11 @@ void Channel::addInvited(Client *client)
 	return;
 }
 
+void Channel::clearInvited()
+{
+	_invited.clear();
+}
+
 void Channel::removeUser(std::string nickName)
 {
 	if (_users.find(nickName) != _users.end())
@@ -114,6 +119,31 @@ void Channel::removeOperator(std::string nickName)
 	if (_operators.find(nickName) != _users.end())
 		_operators.erase(nickName);
 	return;
+}
+
+void Channel::setI(bool mode)
+{
+	this->_i = mode;
+}
+
+void Channel::setK(bool mode)
+{
+	this->_k = mode;
+}
+
+void Channel::setL(bool mode)
+{
+	this->_l = mode;
+}
+
+void Channel::setO(bool mode)
+{
+	this->_o = mode;
+}
+
+void Channel::setT(bool mode)
+{
+	this->_t = mode;
 }
 
 // Methods
@@ -142,10 +172,85 @@ void Channel::sendMessage(Client const *client, std::string const &msg)
 
 void Channel::addModes(std::string modes)
 {
-	
+	for (unsigned int i = 0; i < modes.length(); i++)
+	{
+		switch (modes[i])
+		{
+		case 'i':
+		{
+			this->setI(true);
+			break;
+		}
+		
+		case 't':
+		{
+			this->setT(true);
+			break;
+		}
+
+		case 'k':
+		{
+			this->setK(true);
+			break;
+		}
+
+		case 'o':
+		{
+			this->setO(true);
+			break;
+		}
+
+		case 'l':
+		{
+			this->setL(true);
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
 }
 
 void Channel::removeModes(std::string modes)
 {
+	for (unsigned int i = 0; i < modes.length(); i++)
+	{
+		switch (modes[i])
+		{
+		case 'i':
+		{
+			this->setI(false);
+			clearInvited();
+			break;
+		}
+		
+		case 't':
+		{
+			this->setT(false);
+			break;
+		}
 
+		case 'k':
+		{
+			this->setK(false);
+			break;
+		}
+
+		case 'o':
+		{
+			this->setO(false);
+			break;
+		}
+
+		case 'l':
+		{
+			this->setL(false);
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
 }
