@@ -1,7 +1,7 @@
 #include "Executor.hpp"
 
 std::map<std::string, std::string> checkModes(std::string s);
-
+//solo los operators pueden cambiar el mode
 void Executor::mode()
 {
     std::map<std::string, Channel *> channels = _srv->getChannels();
