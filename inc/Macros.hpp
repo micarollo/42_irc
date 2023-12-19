@@ -4,10 +4,6 @@
 #define PRE_REGISTER 1
 #define REGISTERED 2
 
-// Reply Codes
-#define ERR_NOSUCHNICK 401
-#define ERR_NOTEXTTOSEND 412
-
 // Commands implemented
 #define JOIN 1
 #define CAP 2
@@ -22,7 +18,7 @@
 #define PART 11
 
 // Connection configurations
-#define MAX_NB_CLIENTS 2
+#define MAX_NB_CLIENTS 4
 #define MILISECONDS_BETWEEN_POLL 1
 #define BUFFER_SIZE 4096
 #define MAX_PORT 65535
@@ -54,6 +50,16 @@
 # define ERR_NEEDMOREPARAMS(client, command) (std::string("461 ") + client + " " + command + std::string(" :Not enough parameters"))
 # define ERR_ALREADYREGISTERED(client) (std::string("462 ") + client + " :You may not reregister")
 
+//PRIVMSG
+# define ERR_NOSUCHNICK(client, nickname) (std::string("401 ") + client + " " + nickname + " :No suck nick/channel")
+# define ERR_NOTEXTTOSEND(client) (std::string("412 ") + client + " :No text to send")
+# define ERR_NORECIPIENT(client, command) (std::string("411 ") + client + " :No recipient given " + command)
+
+// INVITE
+# define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " +  channel + " :No such channel")
+# define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " +  channel + " :You're not on that channel")
+# define RPL_INVITING(client, nickname, channel) (std::string("341 ") + client + " " + nickname + " " + channel)
+
 // JOIN
 #define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
 #define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
@@ -77,3 +83,7 @@
 // CAP
 #define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")
 
+// MODES
+# define RPL_CHANNELMODEIS(client, channel, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + modestring + " " + arguments)
+# define RPL_CREATIONTIME(client, channel, creationtime) (std::string("329 ") + client + " " + channel + " " + creationtime)
+#define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")

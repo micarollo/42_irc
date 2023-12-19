@@ -14,6 +14,11 @@ Channel::Channel(std::string name, Client &founderClient, std::string key = "")
 	_operators[founderClient.getNickName()] = &founderClient;
 	_key = key;
 	_userLimit = -1;
+	_i = false;
+	_t = false;
+	_k = false;
+	_o = false;
+	_l = false;
 	return;
 }
 
@@ -67,11 +72,40 @@ std::map<std::string, Client *> const &Channel::getInvited() const
 	return _invited;
 }
 
+std::string Channel::getModes()
+{
+	std::string mod = "+";
+
+	if (_i)
+		mod.append("i");
+	if (_t)
+		mod.append("t");
+	if (_k)
+		mod.append("k");
+	if (_o)
+		mod.append("o");
+	if (_l)
+		mod.append("l");
+	std::cout << "desde getmodes: " << mod << std::endl;
+	return mod;
+}
+
 // Setters
 void Channel::addUser(Client *client)
 {
 	_users[client->getNickName()] = client;
 	return;
+}
+
+void Channel::addInvited(Client *client)
+{
+	_invited[client->getNickName()] = client;
+	return;
+}
+
+void Channel::clearInvited()
+{
+	_invited.clear();
 }
 
 void Channel::removeUser(std::string nickName)
@@ -88,6 +122,31 @@ void Channel::removeOperator(std::string nickName)
 	return;
 }
 
+void Channel::setI(bool mode)
+{
+	this->_i = mode;
+}
+
+void Channel::setK(bool mode)
+{
+	this->_k = mode;
+}
+
+void Channel::setL(bool mode)
+{
+	this->_l = mode;
+}
+
+void Channel::setO(bool mode)
+{
+	this->_o = mode;
+}
+
+void Channel::setT(bool mode)
+{
+	this->_t = mode;
+}
+
 // Methods
 void Channel::sendMsg(std::string msg)
 {
@@ -96,4 +155,115 @@ void Channel::sendMsg(std::string msg)
 		it->second->sendMsg(msg);
 	}
 	return;
+}
+
+void Channel::sendMessage(Client const *client, std::string const &msg)
+{
+	Client *tmp;
+	std::map<std::string, Client *> users = getUsers();
+
+	for (std::map<std::string, Client *>::iterator it = users.begin(); it != users.end(); it++)
+	{
+		// it->second->sendMsg(msg);
+		tmp = it->second;
+		if (tmp->getNickName() != client->getNickName())
+			tmp->sendMsg(msg);
+	}
+}
+
+void Channel::addModes(std::string modes)
+{
+	for (unsigned int i = 0; i < modes.length(); i++)
+	{
+		switch (modes[i])
+		{
+		case 'i':
+		{
+			this->setI(true);
+			break;
+		}
+		
+		case 't':
+		{
+			this->setT(true);
+			break;
+		}
+
+		case 'k':
+		{
+			this->setK(true);
+			break;
+		}
+
+		case 'o':
+		{
+			this->setO(true);
+			break;
+		}
+
+		case 'l':
+		{
+			this->setL(true);
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
+}
+
+void Channel::removeModes(std::string modes)
+{
+	for (unsigned int i = 0; i < modes.length(); i++)
+	{
+		switch (modes[i])
+		{
+		case 'i':
+		{
+			this->setI(false);
+			clearInvited();
+			break;
+		}
+		
+		case 't':
+		{
+			this->setT(false);
+			break;
+		}
+
+		case 'k':
+		{
+			this->setK(false);
+			break;
+		}
+
+		case 'o':
+		{
+			this->setO(false);
+			break;
+		}
+
+		case 'l':
+		{
+			this->setL(false);
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
+}
+
+bool Channel::isOperator(std::string nickName)
+{
+	std::map<std::string, Client *> op = _operators;
+
+	for (std::map<std::string, Client *>::iterator it = op.begin(); it != op.end(); it++)
+	{
+		if (it->first == nickName)
+			return true;
+	}
+	return false;
 }
