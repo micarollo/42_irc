@@ -256,3 +256,15 @@ void Channel::removeModes(std::string modes)
 		}
 	}
 }
+
+bool Channel::isOperator(std::string nickName)
+{
+	std::map<std::string, Client *> op = _operators;
+
+	for (std::map<std::string, Client *>::iterator it = op.begin(); it != op.end(); it++)
+	{
+		if (it->first == nickName)
+			return true;
+	}
+	return false;
+}

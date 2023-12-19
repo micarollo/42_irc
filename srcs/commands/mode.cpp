@@ -23,11 +23,19 @@ void Executor::mode()
                 _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), buffer));
                 return;
             }
-            std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
-            if (modes["+"].size() > 0)
-                it->second->addModes(modes["+"]);
-            if (modes["-"].size() > 0)
-                it->second->removeModes(modes["-"]); 
+            if (it->second->isOperator(_cmd->getClientExec()->getNickName()))
+            {
+                std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
+                if (modes["+"].size() > 0)
+                    it->second->addModes(modes["+"]);
+                if (modes["-"].size() > 0)
+                    it->second->removeModes(modes["-"]);
+            }
+            else
+            {
+                _cmd->getClientExec()->sendMsg(ERR_CHANOPRIVSNEEDED(_cmd->getClientExec()->getUserName(), it->second->getName()));
+                return;
+            }
 		}
         else
         {
