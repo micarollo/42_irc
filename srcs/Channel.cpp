@@ -175,7 +175,6 @@ void Channel::addModes(std::string modes)
 {
 	for (unsigned int i = 0; i < modes.length(); i++)
 	{
-		std::cout << "mode: " << modes[i] << std::endl;
 		switch (modes[i])
 		{
 		case 'i':

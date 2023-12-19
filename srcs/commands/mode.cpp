@@ -67,7 +67,5 @@ std::map<std::string, std::string> checkModes(std::string s)
             }
         }
     }
-    std::cout << "mod +: " << mod["+"] << std::endl;
-    std::cout << "mod -: " << mod["-"] << std::endl;
     return mod;
 }
