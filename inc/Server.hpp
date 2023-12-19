@@ -43,6 +43,7 @@ public:
 	// Methods
 	void run(void);
 	void srvSend(int fd, std::string msg);
+	// int	searchChannel(std::string const &name);
 
 private:
 	// Cannonical Form
