@@ -20,9 +20,9 @@ void Executor::mode()
                 return;
             }
             std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
-            if (modes["+"].size() > 1)
+            if (modes["+"].size() > 0)
                 it->second->addModes(modes["+"]);
-            if (modes["-"].size() > 1)
+            if (modes["-"].size() > 0)
                 it->second->removeModes(modes["-"]); 
 		}
         else
