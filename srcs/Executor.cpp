@@ -30,12 +30,6 @@ Server *const &Executor::getSrv() const
 	return _srv;
 }
 
-// Commands
-void Executor::topic()
-{
-	return;
-}
-
 // Methods
 bool Executor::unregisteredClient(Client *client)
 {
