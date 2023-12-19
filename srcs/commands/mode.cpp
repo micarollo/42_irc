@@ -17,6 +17,10 @@ void Executor::mode()
                 std::string modes = it->second->getModes();
                 //chequear
                 _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes, ""));
+                std::time_t now = std::time(nullptr);
+                char buffer[80];
+                std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+                _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), buffer));
                 return;
             }
             std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);

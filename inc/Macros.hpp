@@ -85,3 +85,4 @@
 
 // MODES
 # define RPL_CHANNELMODEIS(client, channel, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + modestring + " " + arguments)
+# define RPL_CREATIONTIME(client, channel, creationtime) (std::string("329 ") + client + " " + channel + " " + creationtime)
