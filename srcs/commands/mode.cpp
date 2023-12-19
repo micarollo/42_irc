@@ -1,7 +1,7 @@
 #include "Executor.hpp"
 
-std::map<std::string, std::string> checkModes(std::string s);
-//solo los operators pueden cambiar el mode
+static std::map<std::string, std::string> checkModes(std::string s);
+
 void Executor::mode()
 {
     std::map<std::string, Channel *> channels = _srv->getChannels();
@@ -10,12 +10,9 @@ void Executor::mode()
 	{
 		if (it->second->getName() == _cmd->getParams()[0])
 		{
-			//si param[1][0] != + && != -
             if (_cmd->getParams().size() == 1 || (_cmd->getParams()[1][0] != '+' && _cmd->getParams()[1][0] != '-'))
             {
-                //getmodes() RPL_CHANNELMODEIS
                 std::string modes = it->second->getModes();
-                //chequear
                 _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes, ""));
                 std::time_t now = std::time(nullptr);
                 char buffer[80];
@@ -45,7 +42,7 @@ void Executor::mode()
 	}
 }
 
-std::map<std::string, std::string> checkModes(std::string s)
+static std::map<std::string, std::string> checkModes(std::string s)
 {
     std::map<std::string, std::string> mod;
 

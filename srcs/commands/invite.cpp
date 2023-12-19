@@ -25,11 +25,17 @@ void Executor::invite()
                 }
                 if (itCli->second->getNickName() == _cmd->getClientExec()->getNickName())
                 {
-                    // agregarlo
-                    itCh->second->addInvited(itCli->second);
-                    //RPL_INVITED? MSG?
-                    itCli->second->sendMsg(":" + _cmd->getClientExec()->getNickName() + "INVITE" + itCli->second->getNickName() + " " + itCh->second->getName());
-                    _cmd->getClientExec()->sendMsg(RPL_INVITING(_cmd->getClientExec()->getUserName(), itCli->second->getNickName(), itCh->second->getName()));
+                    if (itCh->second->isOperator(_cmd->getClientExec()->getNickName()))
+                    {
+                        itCh->second->addInvited(itCli->second);
+                        itCli->second->sendMsg(":" + _cmd->getClientExec()->getNickName() + "INVITE" + itCli->second->getNickName() + " " + itCh->second->getName());
+                        _cmd->getClientExec()->sendMsg(RPL_INVITING(_cmd->getClientExec()->getUserName(), itCli->second->getNickName(), itCh->second->getName()));
+                    }
+                    else
+                    {
+                        _cmd->getClientExec()->sendMsg(ERR_CHANOPRIVSNEEDED(_cmd->getClientExec()->getUserName(), itCh->second->getName()));
+                        return;
+                    }
                 }
                 else
                 {
@@ -45,5 +51,3 @@ void Executor::invite()
         }
     }
 }
-
-// ERR_INVITEONLYCHAN chequear
