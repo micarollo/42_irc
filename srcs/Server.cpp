@@ -434,11 +434,9 @@ void Server::srvSend(int fd, std::string msg)
 		throw std::runtime_error("Failed to send");
 }
 
-// int	Server::searchChannel(std::string const &name)
-// {
-// 	for (size_t i = 0; i < _channels.size(); ++i)
-// 	{
-// 		if (_channels[i]->getName() == name)
-			
-// 	}
-// }
+Channel	*Server::searchChannel(std::string const &name)
+{
+	if (_channels[name])
+		return _channels[name];
+	return nullptr;
+}

@@ -90,6 +90,31 @@ std::string Channel::getModes()
 	return mod;
 }
 
+bool Channel::getI()
+{
+	return _i;
+}
+
+bool Channel::getK()
+{
+	return _k;
+}
+
+bool Channel::getL()
+{
+	return _l;
+}
+
+bool Channel::getO()
+{
+	return _o;
+}
+
+bool Channel::getT()
+{
+	return _t;
+}
+
 // Setters
 void Channel::addUser(Client *client)
 {
@@ -120,6 +145,11 @@ void Channel::removeOperator(std::string nickName)
 	if (_operators.find(nickName) != _users.end())
 		_operators.erase(nickName);
 	return;
+}
+
+void Channel::setTopic(std::string topic)
+{
+	_topic = topic;
 }
 
 void Channel::setI(bool mode)
@@ -265,5 +295,12 @@ bool Channel::isOperator(std::string nickName)
 		if (it->first == nickName)
 			return true;
 	}
+	return false;
+}
+
+bool Channel::isOnChannel(std::string nickName)
+{
+	if (_users[nickName])
+		return true;
 	return false;
 }
