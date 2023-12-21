@@ -6,10 +6,10 @@ void Executor::mode()
 {
     std::map<std::string, Channel *> channels = _srv->getChannels();
 
-	for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
-	{
-		if (it->second->getName() == _cmd->getParams()[0])
-		{
+    for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+    {
+        if (it->second->getName() == _cmd->getParams()[0])
+        {
             if (_cmd->getParams().size() == 1 || (_cmd->getParams()[1][0] != '+' && _cmd->getParams()[1][0] != '-'))
             {
                 std::string modes = it->second->getModes();
@@ -33,13 +33,13 @@ void Executor::mode()
                 _cmd->getClientExec()->sendMsg(ERR_CHANOPRIVSNEEDED(_cmd->getClientExec()->getUserName(), it->second->getName()));
                 return;
             }
-		}
+        }
         else
         {
             _cmd->getClientExec()->sendMsg(ERR_NOSUCHCHANNEL(_cmd->getClientExec()->getUserName(), _cmd->getParams()[0]));
             return;
         }
-	}
+    }
 }
 
 static std::map<std::string, std::string> checkModes(std::string s)

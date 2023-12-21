@@ -16,7 +16,7 @@ void Executor::privmsg()
 	if (_cmd->getParams().back()[0] != ':')
 	{
 		_cmd->getClientExec()->sendMsg(ERR_NOTEXTTOSEND(_cmd->getClientExec()->getUserName()));
-		return ;
+		return;
 	}
 	args = splitArgs(_cmd->getParams()[0]);
 	for (size_t i = 0; i < args.size(); ++i)

@@ -14,7 +14,6 @@ void Executor::invite()
     {
         if (itCh->second->getName() == _cmd->getParams()[1])
         {
-            // chequear que el usuario no pertenezca ya al canal
             std::map<std::string, Client *> users = itCh->second->getUsers();
             for (std::map<std::string, Client *>::iterator itCli = users.begin(); itCli != users.end(); itCli++)
             {

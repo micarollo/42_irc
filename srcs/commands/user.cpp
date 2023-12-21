@@ -5,12 +5,12 @@ void Executor::user()
 	if (_cmd->getParams().size() < 4 || _cmd->getParams().front().empty())
 	{
 		_cmd->getClientExec()->sendMsg(ERR_NEEDMOREPARAMS(_cmd->getClientExec()->getUserName(), _cmd->getCommandStr()));
-		return ;
+		return;
 	}
 	if (_cmd->getClientExec()->getStatus() == REGISTERED)
 	{
 		_cmd->getClientExec()->sendMsg(ERR_ALREADYREGISTERED(_cmd->getClientExec()->getUserName()));
-		return ;
+		return;
 	}
 	if (_cmd->getParams().back()[0] == ':')
 	{
@@ -41,7 +41,7 @@ void Executor::user()
 	else
 	{
 		_cmd->getClientExec()->sendMsg("Must be: USER <username> 0 * :<realname>");
-        return;
+		return;
 	}
 	return;
 }

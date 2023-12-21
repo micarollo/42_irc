@@ -434,7 +434,7 @@ void Server::srvSend(int fd, std::string msg)
 		throw std::runtime_error("Failed to send");
 }
 
-Channel	*Server::searchChannel(std::string const &name)
+Channel *Server::searchChannel(std::string const &name)
 {
 	if (_channels[name])
 		return _channels[name];
