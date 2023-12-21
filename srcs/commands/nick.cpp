@@ -25,6 +25,7 @@ void Executor::nick()
 	{
 		oldNickName = _cmd->getClientExec()->getNickName();
 		_cmd->getClientExec()->setNickName(_cmd->getParams()[0]);
+		_srv->updateChNickName(oldNickName, _cmd->getParams()[0]);
 		_cmd->getClientExec()->sendMsg((":" + oldNickName + " NICK " + _cmd->getClientExec()->getNickName()));
 	}
 	else

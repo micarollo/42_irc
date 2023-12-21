@@ -49,6 +49,7 @@ public:
 	void removeModes(std::string modes);
 	bool isOperator(std::string nickName);
 	bool isOnChannel(std::string nickName);
+	void updateNickName(std::string const &oldNickName, std::string const &newNickName);
 
 private:
 	// Cannonical Form

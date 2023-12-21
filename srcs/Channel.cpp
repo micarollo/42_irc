@@ -86,7 +86,6 @@ std::string Channel::getModes()
 		mod.append("o");
 	if (_l)
 		mod.append("l");
-	std::cout << "desde getmodes: " << mod << std::endl;
 	return mod;
 }
 
@@ -307,3 +306,29 @@ bool Channel::isOnChannel(std::string nickName)
 		return true;
 	return false;
 }
+
+void Channel::updateNickName(std::string const &oldNickName, std::string const &newNickName) {
+        // Actualizar en _users
+        std::map<std::string, Client*>::iterator userIt = _users.find(oldNickName);
+        if (userIt != _users.end()) {
+            Client* client = userIt->second;
+            _users.erase(userIt);
+            _users.insert(std::pair<std::string, Client*>(newNickName, client));
+        }
+
+        // Actualizar en _operators
+        std::map<std::string, Client*>::iterator opIt = _operators.find(oldNickName);
+        if (opIt != _operators.end()) {
+            Client* client = opIt->second;
+            _operators.erase(opIt);
+            _operators.insert(std::pair<std::string, Client*>(newNickName, client));
+        }
+
+        // Actualizar en _invited
+        std::map<std::string, Client*>::iterator invitedIt = _invited.find(oldNickName);
+        if (invitedIt != _invited.end()) {
+            Client* client = invitedIt->second;
+            _invited.erase(invitedIt);
+            _invited.insert(std::pair<std::string, Client*>(newNickName, client));
+        }
+    }

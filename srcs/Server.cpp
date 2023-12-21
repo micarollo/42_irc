@@ -440,3 +440,14 @@ Channel	*Server::searchChannel(std::string const &name)
 		return _channels[name];
 	return nullptr;
 }
+
+void Server::updateChNickName(std::string oldNickName, std::string newNickName)
+{
+	std::map<std::string, Channel *> ch = _channels;
+
+	for (std::map<std::string, Channel *>::iterator it = ch.begin(); it != ch.end(); it++)
+	{
+		if (it->second->isOnChannel(oldNickName))
+			it->second->updateNickName(oldNickName, newNickName);
+	}
+}
