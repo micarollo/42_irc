@@ -40,7 +40,7 @@ void Executor::user()
 	}
 	else
 	{
-		_cmd->getClientExec()->sendMsg("Must be: USER <username> 0 * <realname>");
+		_cmd->getClientExec()->sendMsg("Must be: USER <username> 0 * :<realname>");
         return;
 	}
 	return;
