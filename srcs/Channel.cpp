@@ -149,7 +149,10 @@ void Channel::removeOperator(std::string nickName)
 
 void Channel::setTopic(std::string topic)
 {
-	_topic = topic;
+	if (topic.length() > 1)
+		_topic = topic.substr(1);
+	else
+		_topic = topic;
 }
 
 void Channel::setI(bool mode)
