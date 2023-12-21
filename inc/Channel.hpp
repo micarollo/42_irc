@@ -23,6 +23,11 @@ public:
 	std::map<std::string, Client *> const &getOperators() const;
 	std::map<std::string, Client *> const &getInvited() const;
 	std::string getModes();
+	bool getI(void);
+	bool getT(void);
+	bool getK(void);
+	bool getO(void);
+	bool getL(void);
 
 	// Setters
 	void addUser(Client *client);
@@ -30,6 +35,7 @@ public:
 	void clearInvited();
 	void removeUser(std::string nickName);
 	void removeOperator(std::string nickName);
+	void setTopic(std::string topic);
 	void setI(bool mode);
 	void setT(bool mode);
 	void setK(bool mode);
@@ -42,6 +48,7 @@ public:
 	void addModes(std::string modes);
 	void removeModes(std::string modes);
 	bool isOperator(std::string nickName);
+	bool isOnChannel(std::string nickName);
 
 private:
 	// Cannonical Form

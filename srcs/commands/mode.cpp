@@ -14,10 +14,10 @@ void Executor::mode()
             {
                 std::string modes = it->second->getModes();
                 _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes, ""));
-                std::time_t now = std::time(nullptr);
-                char buffer[80];
-                std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
-                _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), buffer));
+                // std::time_t now = std::time(nullptr);
+                // char buffer[80];
+                // std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+                _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
                 return;
             }
             if (it->second->isOperator(_cmd->getClientExec()->getNickName()))

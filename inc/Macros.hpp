@@ -86,4 +86,8 @@
 // MODES
 # define RPL_CHANNELMODEIS(client, channel, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + modestring + " " + arguments)
 # define RPL_CREATIONTIME(client, channel, creationtime) (std::string("329 ") + client + " " + channel + " " + creationtime)
-#define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
+# define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
+
+// TOPIC
+# define RPL_TOPICWHOTIME(client, channel, nick, setat) (std::string("333 ") + client + " " + channel + " " + nick + " " + setat)
+# define RPL_NOTOPIC(client, channel) (std::string("331 ") + client + " " + channel + " :No topic is set")
