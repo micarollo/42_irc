@@ -86,8 +86,32 @@ std::string Channel::getModes()
 		mod.append("o");
 	if (_l)
 		mod.append("l");
-	std::cout << "desde getmodes: " << mod << std::endl;
 	return mod;
+}
+
+bool Channel::getI()
+{
+	return _i;
+}
+
+bool Channel::getK()
+{
+	return _k;
+}
+
+bool Channel::getL()
+{
+	return _l;
+}
+
+bool Channel::getO()
+{
+	return _o;
+}
+
+bool Channel::getT()
+{
+	return _t;
 }
 
 // Setters
@@ -120,6 +144,14 @@ void Channel::removeOperator(std::string nickName)
 	if (_operators.find(nickName) != _users.end())
 		_operators.erase(nickName);
 	return;
+}
+
+void Channel::setTopic(std::string topic)
+{
+	if (topic.length() > 1)
+		_topic = topic.substr(1);
+	else
+		_topic = topic;
 }
 
 void Channel::setI(bool mode)
@@ -182,7 +214,7 @@ void Channel::addModes(std::string modes)
 			this->setI(true);
 			break;
 		}
-		
+
 		case 't':
 		{
 			this->setT(true);
@@ -225,7 +257,7 @@ void Channel::removeModes(std::string modes)
 			clearInvited();
 			break;
 		}
-		
+
 		case 't':
 		{
 			this->setT(false);
@@ -266,4 +298,36 @@ bool Channel::isOperator(std::string nickName)
 			return true;
 	}
 	return false;
+}
+
+bool Channel::isOnChannel(std::string nickName)
+{
+	if (_users[nickName])
+		return true;
+	return false;
+}
+
+void Channel::updateNickName(std::string const &oldNickName, std::string const &newNickName)
+{
+	std::map<std::string, Client *>::iterator userIt = _users.find(oldNickName);
+	if (userIt != _users.end())
+	{
+		Client *client = userIt->second;
+		_users.erase(userIt);
+		_users.insert(std::pair<std::string, Client *>(newNickName, client));
+	}
+	std::map<std::string, Client *>::iterator opIt = _operators.find(oldNickName);
+	if (opIt != _operators.end())
+	{
+		Client *client = opIt->second;
+		_operators.erase(opIt);
+		_operators.insert(std::pair<std::string, Client *>(newNickName, client));
+	}
+	std::map<std::string, Client *>::iterator invitedIt = _invited.find(oldNickName);
+	if (invitedIt != _invited.end())
+	{
+		Client *client = invitedIt->second;
+		_invited.erase(invitedIt);
+		_invited.insert(std::pair<std::string, Client *>(newNickName, client));
+	}
 }

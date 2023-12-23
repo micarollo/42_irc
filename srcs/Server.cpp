@@ -434,11 +434,20 @@ void Server::srvSend(int fd, std::string msg)
 		throw std::runtime_error("Failed to send");
 }
 
-// int	Server::searchChannel(std::string const &name)
-// {
-// 	for (size_t i = 0; i < _channels.size(); ++i)
-// 	{
-// 		if (_channels[i]->getName() == name)
-			
-// 	}
-// }
+Channel *Server::searchChannel(std::string const &name)
+{
+	if (_channels[name])
+		return _channels[name];
+	return nullptr;
+}
+
+void Server::updateChNickName(std::string oldNickName, std::string newNickName)
+{
+	std::map<std::string, Channel *> ch = _channels;
+
+	for (std::map<std::string, Channel *>::iterator it = ch.begin(); it != ch.end(); it++)
+	{
+		if (it->second->isOnChannel(oldNickName))
+			it->second->updateNickName(oldNickName, newNickName);
+	}
+}

@@ -39,6 +39,7 @@ public:
 	void userMsg(std::string const &name, Client const *client, std::string const &msg);
 	void sendClientMsg(std::string nickName, std::string const &msg);
 	static void parseCommas(std::string param, std::vector<std::string> &vector);
+	std::string getCurrentTime();
 
 	// void chanMsg(std::string &chan, Client const *client);
 

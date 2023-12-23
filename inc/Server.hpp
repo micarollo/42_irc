@@ -43,7 +43,8 @@ public:
 	// Methods
 	void run(void);
 	void srvSend(int fd, std::string msg);
-	// int	searchChannel(std::string const &name);
+	Channel	*searchChannel(std::string const &name);
+	void updateChNickName(std::string oldNickName, std::string newNickName);
 
 private:
 	// Cannonical Form

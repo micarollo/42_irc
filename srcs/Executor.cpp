@@ -30,12 +30,6 @@ Server *const &Executor::getSrv() const
 	return _srv;
 }
 
-// Commands
-void Executor::topic()
-{
-	return;
-}
-
 // Methods
 bool Executor::unregisteredClient(Client *client)
 {
@@ -65,6 +59,14 @@ void Executor::parseCommas(std::string param, std::vector<std::string> &vector)
 
 	while (std::getline(iss, token, ','))
 		vector.push_back(token);
+}
+
+std::string Executor::getCurrentTime()
+{
+	std::time_t now = std::time(nullptr);
+	char buffer[80];
+	std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+	return std::string(buffer);
 }
 
 bool Executor::isInvalidChannel(std::string channelName, std::map<std::string, Channel *> channels, Client *client)
