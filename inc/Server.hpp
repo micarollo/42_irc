@@ -34,6 +34,7 @@ public:
 	std::string const &getName() const;
 	std::string const &getPass() const;
 	std::map<int, Client *> const &getClients();
+	Client *getClient(std::string nickname);
 	std::map<std::string, Channel *> const &getChannels();
 
 	// Setters
@@ -43,7 +44,7 @@ public:
 	// Methods
 	void run(void);
 	void srvSend(int fd, std::string msg);
-	Channel	*searchChannel(std::string const &name);
+	Channel *searchChannel(std::string const &name);
 	void updateChNickName(std::string oldNickName, std::string newNickName);
 
 private:

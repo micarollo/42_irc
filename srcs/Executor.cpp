@@ -46,7 +46,7 @@ bool Executor::illegalParamNb(std::vector<std::string> params, Client *client, s
 	if (params.size() < min || params.size() > max)
 	{
 		// tmp
-		client->sendMsg(ERR_NEEDMOREPARAMS("", client->getNickName()));
+		client->sendMsg(ERR_NEEDMOREPARAMS(client->getUserName(), ""));
 		return true;
 	}
 	return false;

@@ -63,7 +63,6 @@ static void addNewChannel(Server *srv, std::vector<std::string>::iterator it, Cl
 	srv->addChannel(newChannel);
 	warnNewUser(newChannel, client);
 
-	// tmp
 	std::cout << "Create new channel " << newChannel->getName() << std::endl;
 }
 
@@ -94,23 +93,18 @@ static bool userAlreadyJoined(Channel *channel, Client *client)
 
 static bool notAllowedInChannel(Channel *channel, Client *client)
 {
-	// tmp
-	// TODO invite only - if mode is set and user is not on invited list
-	if (false)
+	if (channel->getI() && channel->getInvited().find(client->getNickName()) == channel->getInvited().end())
 	{
 		client->sendMsg(ERR_INVITEONLYCHAN(client->getUserName(), channel->getName()));
 		return true;
 	}
 
-	// tmp
-	// or user limit
-	if (false)
+	if (channel->getL() && channel->getUsers().size() >= channel->getUserLimit())
 	{
 		client->sendMsg(ERR_CHANNELISFULL(client->getUserName(), channel->getName()));
 		return true;
 	}
 
-	// TODO remove from invited list if client is found
 	return false;
 }
 
@@ -124,6 +118,12 @@ static bool badChannelKey(Channel *channel, Client *client, std::string key)
 	return false;
 }
 
+static void removeNewUserFromInvited(Channel *channel, Client *client)
+{
+	channel->removeInvited(client->getNickName());
+	return;
+}
+
 static void tryJoinChannel(Channel *channel, Client *client, std::string key = "")
 {
 	if (userAlreadyJoined(channel, client) || notAllowedInChannel(channel, client) || badChannelKey(channel, client, key))
@@ -131,6 +131,9 @@ static void tryJoinChannel(Channel *channel, Client *client, std::string key = "
 
 	channel->addUser(client);
 	warnNewUser(channel, client);
+
+	if (channel->getI())
+		removeNewUserFromInvited(channel, client);
 }
 
 static std::string getChannelKey(std::vector<std::string> keys, std::vector<std::string>::iterator it, std::vector<std::string>::iterator beginIt)
