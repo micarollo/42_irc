@@ -72,6 +72,11 @@ std::map<std::string, Client *> const &Channel::getInvited() const
 	return _invited;
 }
 
+size_t const &Channel::getUserLimit() const
+{
+	return _userLimit;
+}
+
 std::string Channel::getModes()
 {
 	std::string mod = "+";
@@ -124,6 +129,12 @@ void Channel::addUser(Client *client)
 void Channel::addInvited(Client *client)
 {
 	_invited[client->getNickName()] = client;
+	return;
+}
+
+void Channel::removeInvited(std::string nickName)
+{
+	_invited.erase(nickName);
 	return;
 }
 
@@ -302,9 +313,7 @@ bool Channel::isOperator(std::string nickName)
 
 bool Channel::isOnChannel(std::string nickName)
 {
-	if (_users[nickName])
-		return true;
-	return false;
+	return (_users.find(nickName) != _users.end());
 }
 
 void Channel::updateNickName(std::string const &oldNickName, std::string const &newNickName)

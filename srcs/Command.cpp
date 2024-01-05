@@ -10,11 +10,6 @@ Command::Command(void)
 
 Command::Command(std::string msg, Client *clientExec) : _clientExec(clientExec)
 {
-	// tmp
-	// _command = 999;
-	// _commandStr = "TEST";
-	// _params.push_back("hello");
-
 	parseCommand(msg);
 	return;
 }
