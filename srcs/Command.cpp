@@ -64,11 +64,8 @@ void Command::parseCommand(std::string const &msg)
 
 	iss >> token;
 	_command = checkCommand(token);
-	if (!_command) // CHECK ERROR
-	{
-		std::cout << "Command not found" << std::endl;
+	if (!_command)
 		return;
-	}
 	_commandStr = token;
 	iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
 	while (std::getline(iss, token, ' '))

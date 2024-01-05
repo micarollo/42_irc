@@ -258,12 +258,9 @@ void Server::processCommands(std::string oneMsg, int clientFd)
 	{
 		try
 		{
-			// tmp
-			std::cout << command << std::endl;
+			std::cout << "Client [" << _clients[clientFd]->getNickName() << "] fd[" << clientFd << "] attempted command: <" << command << ">" << std::endl;
 
 			Command cmd(command, _clients[clientFd]);
-
-			// tmp
 			executeOneCommand(cmd);
 		}
 		catch (const std::exception &e)
@@ -338,8 +335,7 @@ void Server::executeOneCommand(Command &cmd)
 	}
 	default:
 	{
-		// tmp
-		cmd.getClientExec()->sendMsg("Command <" + cmd.getCommandStr() + "> not implemented");
+		cmd.getClientExec()->sendMsg("Invalid command\n->Valid comands are [USER, NICK, PASS, JOIN, PART, PRIVMSG, KICK, INVITE, TOPIC, MODE]");
 	}
 	}
 
