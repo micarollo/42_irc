@@ -24,7 +24,13 @@ void Executor::mode()
             {
                 std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
                 if (modes["+"].size() > 0)
+                {
                     it->second->addModes(modes["+"]);
+                    it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
+                    it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes["+"], ""));
+                    // _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
+                    // _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes["+"], ""));
+                }
                 if (modes["-"].size() > 0)
                     it->second->removeModes(modes["-"]);
             }
