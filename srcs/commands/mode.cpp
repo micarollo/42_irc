@@ -6,46 +6,46 @@ void Executor::mode()
 {
     std::map<std::string, Channel *> channels = _srv->getChannels();
 
-    for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+    if (_cmd->getClientExec()->getStatus() == REGISTERED)
     {
-        if (it->second->getName() == _cmd->getParams()[0])
+        for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
         {
-            if (_cmd->getParams().size() == 1 || (_cmd->getParams()[1][0] != '+' && _cmd->getParams()[1][0] != '-'))
+            if (it->second->getName() == _cmd->getParams()[0])
             {
-                std::string modes = it->second->getModes();
-                _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "", modes, ""));
-                // std::time_t now = std::time(nullptr);
-                // char buffer[80];
-                // std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
-                _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
-                return;
-            }
-            if (it->second->isOperator(_cmd->getClientExec()->getNickName()))
-            {
-                std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
-                if (modes["+"].size() > 0)
+                if (_cmd->getParams().size() == 1 || (_cmd->getParams()[1][0] != '+' && _cmd->getParams()[1][0] != '-'))
                 {
-                    it->second->addModes(modes["+"]);
-                    it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
-                    it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "+", modes["+"], ""));
+                    std::string modes = it->second->getModes();
+                    _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "", modes, ""));
+                    _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
+                    return;
                 }
-                if (modes["-"].size() > 0)
+                if (it->second->isOperator(_cmd->getClientExec()->getNickName()))
                 {
-                    it->second->removeModes(modes["-"]);
-                    it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
-                    it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "+", modes["-"], ""));
+                    std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
+                    if (modes["+"].size() > 0)
+                    {
+                        it->second->addModes(modes["+"]);
+                        it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
+                        it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "+", modes["+"], ""));
+                    }
+                    if (modes["-"].size() > 0)
+                    {
+                        it->second->removeModes(modes["-"]);
+                        it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
+                        it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "+", modes["-"], ""));
+                    }
+                }
+                else
+                {
+                    _cmd->getClientExec()->sendMsg(ERR_CHANOPRIVSNEEDED(_cmd->getClientExec()->getUserName(), it->second->getName()));
+                    return;
                 }
             }
             else
             {
-                _cmd->getClientExec()->sendMsg(ERR_CHANOPRIVSNEEDED(_cmd->getClientExec()->getUserName(), it->second->getName()));
+                _cmd->getClientExec()->sendMsg(ERR_NOSUCHCHANNEL(_cmd->getClientExec()->getUserName(), _cmd->getParams()[0]));
                 return;
             }
-        }
-        else
-        {
-            _cmd->getClientExec()->sendMsg(ERR_NOSUCHCHANNEL(_cmd->getClientExec()->getUserName(), _cmd->getParams()[0]));
-            return;
         }
     }
 }
