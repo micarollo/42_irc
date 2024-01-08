@@ -1,6 +1,7 @@
 #include "Executor.hpp"
 
 static std::map<std::string, std::string> checkModes(std::string s);
+static int countArguments(std::map<std::string, std::string> &modes);
 
 void Executor::mode()
 {
@@ -20,6 +21,8 @@ void Executor::mode()
             if (channels[_cmd->getParams()[0]]->isOperator(_cmd->getClientExec()->getNickName()))
             {
                 std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1]);
+                int count = countArguments(modes);
+                std::cout << "count: " << count << std::endl;
                 if (modes["+"].size() > 0)
                 {
                     channels[_cmd->getParams()[0]]->addModes(modes["+"]);
@@ -151,6 +154,33 @@ static std::map<std::string, std::string> checkModes(std::string s)
         }
     }
     return mod;
+}
+
+static int countArguments(std::map<std::string, std::string> &modes)
+{
+    int count = 0;
+
+    for (std::size_t i = 0; i < modes["+"].length(); ++i)
+    {
+        char c = modes["+"][i];
+
+        if (c == 'k' || c == 'o' || c == 'l')
+        {
+            ++count;
+        }
+    }
+
+    for (std::size_t i = 0; i < modes["-"].length(); ++i)
+    {
+        char c = modes["-"][i];
+
+        if (c == 'o')
+        {
+            ++count;
+        }
+    }
+
+    return count;
 }
 
 // static int countArgs(std::string modes, char c)
