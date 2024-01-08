@@ -13,7 +13,7 @@ void Executor::mode()
             if (_cmd->getParams().size() == 1 || (_cmd->getParams()[1][0] != '+' && _cmd->getParams()[1][0] != '-'))
             {
                 std::string modes = it->second->getModes();
-                _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes, ""));
+                _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "", modes, ""));
                 // std::time_t now = std::time(nullptr);
                 // char buffer[80];
                 // std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
@@ -27,12 +27,14 @@ void Executor::mode()
                 {
                     it->second->addModes(modes["+"]);
                     it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
-                    it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes["+"], ""));
-                    // _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
-                    // _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), modes["+"], ""));
+                    it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "+", modes["+"], ""));
                 }
                 if (modes["-"].size() > 0)
+                {
                     it->second->removeModes(modes["-"]);
+                    it->second->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), it->second->getName(), getCurrentTime()));
+                    it->second->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), it->second->getName(), "+", modes["-"], ""));
+                }
             }
             else
             {
