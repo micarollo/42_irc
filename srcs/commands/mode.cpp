@@ -99,21 +99,76 @@ static std::map<std::string, std::string> checkModes(std::string s)
 
     mod["+"] = "";
     mod["-"] = "";
-    for (unsigned long i = 0; i < s.length(); i++)
+    // for (unsigned long i = 0; i < s.length(); i++)
+    // {
+    //     // bool rep = false;
+    //     if (std::isalpha(s[i]) && std::string("itkol").find(s[i]) != std::string::npos)
+    //     {
+    //         // if (i > 0)
+    //         // {
+    //         //     for (unsigned long j = i - 1; j >= 0; j--)
+    //         //     {
+    //         //         if (s[i] == s[j])
+    //         //             rep = true;
+    //         //     }
+    //         // }
+    //         if (s[0] == '+')
+    //         {
+    //             if (mod["+"].find(s[i]) == std::string::npos)
+    //                 mod["+"] += s[i];
+    //         }
+    //         if (s[0] == '-')
+    //         {
+    //             if (mod["-"].find(s[i]) == std::string::npos)
+    //                 mod["-"] += s[i];
+    //         }
+    //     }
+    // }
+    for (unsigned long i = 0; i < s.length(); ++i)
     {
-        if (std::isalpha(s[i]) && std::string("itkol").find(s[i]) != std::string::npos)
+        if (s[i] == '+' || s[i] == '-')
         {
-            if (s[0] == '+')
+            std::string currentMode = s.substr(i, 1);
+
+            while (++i < s.length() && std::string("itkol").find(s[i]) != std::string::npos)
             {
-                if (mod["+"].find(s[i]) == std::string::npos)
-                    mod["+"] += s[i];
+                if (currentMode == "+")
+                {
+                    if (mod["+"].find(s[i]) == std::string::npos)
+                    {
+                        mod["+"] += s[i];
+                    }
+                }
+                else if (currentMode == "-")
+                {
+                    if (mod["-"].find(s[i]) == std::string::npos)
+                    {
+                        mod["-"] += s[i];
+                    }
+                }
             }
-            if (s[0] == '-')
-            {
-                if (mod["-"].find(s[i]) == std::string::npos)
-                    mod["-"] += s[i];
-            }
+            --i;
         }
     }
     return mod;
 }
+
+// static int countArgs(std::string modes, char c)
+// {
+//     int count;
+
+//     if (c == '+')
+//     {
+//         if (modes.find("k"))
+//             count++;
+//         if (modes.find("o"))
+//             count++;
+//         if (modes.find("l"))
+//             count++;
+//     }
+//     if (c == '-')
+//     {
+//         if (modes.find("o"))
+//             count++;
+//     }
+// }
