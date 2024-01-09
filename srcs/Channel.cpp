@@ -165,6 +165,25 @@ void Channel::setTopic(std::string topic)
 		_topic = topic;
 }
 
+void Channel::setUserLimit(std::string limit)
+{
+	size_t res = 0;
+
+	for (std::size_t i = 0; i < limit.length(); ++i)
+	{
+		if (limit[i] >= '0' && limit[i] <= '9')
+		{
+			res = res * 10 + (limit[i] - '0');
+		}
+	}
+	this->_userLimit = res;
+}
+
+void Channel::setKey(std::string key)
+{
+	this->_key = key;
+}
+
 void Channel::setI(bool mode)
 {
 	this->_i = mode;
@@ -172,20 +191,20 @@ void Channel::setI(bool mode)
 
 void Channel::setK(bool mode, std::string arg)
 {
-	std::cout << "param: " << arg << std::endl;
 	this->_k = mode;
+	this->setKey(arg);
 }
 
 void Channel::setL(bool mode, std::string arg)
 {
-	std::cout << "param: " << arg << std::endl;
 	this->_l = mode;
+	this->setUserLimit(arg);
 }
 
 void Channel::setO(bool mode, std::string arg)
 {
-	std::cout << "param: " << arg << std::endl;
 	this->_o = mode;
+	std::cout << arg << std::endl;
 }
 
 void Channel::setT(bool mode)
@@ -217,7 +236,7 @@ void Channel::sendMessage(Client const *client, std::string const &msg)
 	}
 }
 
-void Channel::addModes(std::string modes, std::vector<std::string> params)
+int Channel::addModes(std::string modes, std::vector<std::string> params)
 {
 	int count = 0;
 
@@ -254,6 +273,15 @@ void Channel::addModes(std::string modes, std::vector<std::string> params)
 		case 'l':
 		{
 			count++;
+			std::string limit = params[count + 1];
+			for (std::size_t i = 0; i < limit.length(); ++i)
+			{
+				if (limit[i] < '0' || limit[i] > '9')
+				{
+					std::cout << "NOT NUMBER" << std::endl; //tengo que retornar algo FUCKK
+					return 1;
+				}
+			}
 			this->setL(true, params[count + 1]);
 			break;
 		}
@@ -262,6 +290,7 @@ void Channel::addModes(std::string modes, std::vector<std::string> params)
 			break;
 		}
 	}
+	return 0;
 }
 
 void Channel::removeModes(std::string modes, std::vector<std::string> params)

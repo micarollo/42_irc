@@ -39,6 +39,8 @@ public:
 	void removeUser(std::string nickName);
 	void removeOperator(std::string nickName);
 	void setTopic(std::string topic);
+	void setUserLimit(std::string limit);
+	void setKey(std::string key);
 	void setI(bool mode);
 	void setT(bool mode);
 	void setK(bool mode, std::string arg);
@@ -48,7 +50,7 @@ public:
 	// Methods
 	void sendMsg(std::string msg);
 	void sendMessage(Client const *client, std::string const &msg);
-	void addModes(std::string modes, std::vector<std::string> params);
+	int addModes(std::string modes, std::vector<std::string> params);
 	void removeModes(std::string modes, std::vector<std::string> params);
 	bool isOperator(std::string nickName);
 	bool isOnChannel(std::string nickName);

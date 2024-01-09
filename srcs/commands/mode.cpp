@@ -31,9 +31,13 @@ void Executor::mode()
                 }
                 if (modes["+"].size() > 0)
                 {
-                    channels[_cmd->getParams()[0]]->addModes(modes["+"], _cmd->getParams());
-                    channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
-                    channels[_cmd->getParams()[0]]->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), "+", modes["+"], ""));
+                    if (channels[_cmd->getParams()[0]]->addModes(modes["+"], _cmd->getParams()))
+                        std::cout << "NO MANDO EL MENSAJE" << std::endl; //que error saco?
+                    else
+                    {
+                        channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
+                        channels[_cmd->getParams()[0]]->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), "+", modes["+"], ""));
+                    }
                 }
                 if (modes["-"].size() > 0)
                 {
