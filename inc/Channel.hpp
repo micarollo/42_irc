@@ -4,6 +4,7 @@
 // Libraries
 #include <iostream>
 #include <map>
+#include <vector>
 
 // Classes
 #include "Client.hpp"
@@ -40,15 +41,15 @@ public:
 	void setTopic(std::string topic);
 	void setI(bool mode);
 	void setT(bool mode);
-	void setK(bool mode);
-	void setO(bool mode);
-	void setL(bool mode);
+	void setK(bool mode, std::string arg);
+	void setO(bool mode, std::string arg);
+	void setL(bool mode, std::string arg);
 
 	// Methods
 	void sendMsg(std::string msg);
 	void sendMessage(Client const *client, std::string const &msg);
-	void addModes(std::string modes);
-	void removeModes(std::string modes);
+	void addModes(std::string modes, std::vector<std::string> params);
+	void removeModes(std::string modes, std::vector<std::string> params);
 	bool isOperator(std::string nickName);
 	bool isOnChannel(std::string nickName);
 	void updateNickName(std::string const &oldNickName, std::string const &newNickName);

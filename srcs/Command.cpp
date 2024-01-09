@@ -97,14 +97,6 @@ void Command::parseCommand(std::string const &msg)
 		// tmp = tmp.substr(1);
 		_params.push_back(tmp);
 	}
-	// IMPRIMIR
-	// std::cout << "Command: " << _commandStr << std::endl;
-	// std::cout << "Params:" << std::endl;
-	// for (size_t i = 0; i < _params.size(); ++i)
-	// {
-	// 	std::cout << _params[i] << std::endl;
-	// 	// std::cout << "*" << _params[i] << "*" << std::endl;
-	// }
 	return;
 }
 

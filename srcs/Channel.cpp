@@ -170,18 +170,21 @@ void Channel::setI(bool mode)
 	this->_i = mode;
 }
 
-void Channel::setK(bool mode)
+void Channel::setK(bool mode, std::string arg)
 {
+	std::cout << "param: " << arg << std::endl;
 	this->_k = mode;
 }
 
-void Channel::setL(bool mode)
+void Channel::setL(bool mode, std::string arg)
 {
+	std::cout << "param: " << arg << std::endl;
 	this->_l = mode;
 }
 
-void Channel::setO(bool mode)
+void Channel::setO(bool mode, std::string arg)
 {
+	std::cout << "param: " << arg << std::endl;
 	this->_o = mode;
 }
 
@@ -214,8 +217,10 @@ void Channel::sendMessage(Client const *client, std::string const &msg)
 	}
 }
 
-void Channel::addModes(std::string modes)
+void Channel::addModes(std::string modes, std::vector<std::string> params)
 {
+	int count = 0;
+
 	for (unsigned int i = 0; i < modes.length(); i++)
 	{
 		switch (modes[i])
@@ -234,19 +239,22 @@ void Channel::addModes(std::string modes)
 
 		case 'k':
 		{
-			this->setK(true);
+			count++;
+			this->setK(true, params[count + 1]);
 			break;
 		}
 
 		case 'o':
 		{
-			this->setO(true);
+			count++;
+			this->setO(true, params[count + 1]);
 			break;
 		}
 
 		case 'l':
 		{
-			this->setL(true);
+			count++;
+			this->setL(true, params[count + 1]);
 			break;
 		}
 
@@ -256,7 +264,7 @@ void Channel::addModes(std::string modes)
 	}
 }
 
-void Channel::removeModes(std::string modes)
+void Channel::removeModes(std::string modes, std::vector<std::string> params)
 {
 	for (unsigned int i = 0; i < modes.length(); i++)
 	{
@@ -277,19 +285,19 @@ void Channel::removeModes(std::string modes)
 
 		case 'k':
 		{
-			this->setK(false);
+			this->setK(false, "");
 			break;
 		}
 
 		case 'o':
 		{
-			this->setO(false);
+			this->setO(false, params[2]);
 			break;
 		}
 
 		case 'l':
 		{
-			this->setL(false);
+			this->setL(false, "");
 			break;
 		}
 
