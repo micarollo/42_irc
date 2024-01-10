@@ -24,15 +24,22 @@ void Executor::mode()
                 unsigned int count = countArguments(modes);
                 // std::cout << "count: " << count << std::endl;
                 // std::cout << "args size: " << _cmd->getParams().size() << std::endl;
-                if (count + 2 != _cmd->getParams().size())
+                if ((count > 0) && (count + 2 != _cmd->getParams().size()))
                 {
                     _cmd->getClientExec()->sendMsg(ERR_NEEDMOREPARAMS(_cmd->getClientExec()->getUserName(), _cmd->getCommandStr()));
                     return;
                 }
                 if (modes["+"].size() > 0)
                 {
-                    if (channels[_cmd->getParams()[0]]->addModes(modes["+"], _cmd->getParams()))
-                        std::cout << "NO MANDO EL MENSAJE" << std::endl; //que error saco?
+                    int res = channels[_cmd->getParams()[0]]->addModes(modes["+"], _cmd->getParams());
+                    if (res)
+                        // std::cout << "NO MANDO EL MENSAJE" << std::endl; //que error saco?
+                    {
+                        if (res == 1)
+                            _cmd->getClientExec()->sendMsg("Limit must be a number");
+                        if (res == 2)
+                            _cmd->getClientExec()->sendMsg(ERR_NOTONCHANNEL(_cmd->getClientExec()->getUserName(), _cmd->getParams()[0])); // acerca del que quiere agregar..
+                    }
                     else
                     {
                         channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
@@ -137,6 +144,7 @@ static std::map<std::string, std::string> checkModes(std::string s)
     //         }
     //     }
     // }
+    // chequear antes si las letras pertenecen a modos o sino dentro del while separando la segunda condicion
     for (unsigned long i = 0; i < s.length(); ++i)
     {
         if (s[i] == '+' || s[i] == '-')
@@ -192,23 +200,3 @@ static unsigned int countArguments(std::map<std::string, std::string> &modes)
 
     return count;
 }
-
-// static int countArgs(std::string modes, char c)
-// {
-//     int count;
-
-//     if (c == '+')
-//     {
-//         if (modes.find("k"))
-//             count++;
-//         if (modes.find("o"))
-//             count++;
-//         if (modes.find("l"))
-//             count++;
-//     }
-//     if (c == '-')
-//     {
-//         if (modes.find("o"))
-//             count++;
-//     }
-// }

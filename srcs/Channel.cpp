@@ -280,8 +280,8 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 				this->setO(true, params[count + 1]);
 			else
 			{
-				std::cout << "NOT ON CHANNEL" << std::endl;
-				return 1;
+				// std::cout << "NOT ON CHANNEL" << std::endl;
+				return 2;
 			}
 			break;
 		}
@@ -294,7 +294,7 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 			{
 				if (limit[i] < '0' || limit[i] > '9')
 				{
-					std::cout << "NOT NUMBER" << std::endl; // tengo que retornar algo FUCKK
+					// std::cout << "NOT NUMBER" << std::endl; // tengo que retornar algo FUCKK
 					return 1;								// segun que num retorno tiro un error dif?
 				}
 			}
