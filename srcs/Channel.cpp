@@ -150,6 +150,13 @@ void Channel::removeUser(std::string nickName)
 	return;
 }
 
+void Channel::addOperator(std::string nickName)
+{
+	std::map<std::string, Client *>::iterator userIt = _users.find(nickName);
+	_operators[nickName] = userIt->second;
+	return;
+}
+
 void Channel::removeOperator(std::string nickName)
 {
 	if (_operators.find(nickName) != _users.end())
@@ -204,7 +211,10 @@ void Channel::setL(bool mode, std::string arg)
 void Channel::setO(bool mode, std::string arg)
 {
 	this->_o = mode;
-	std::cout << arg << std::endl;
+	if (mode == true)
+		this->addOperator(arg);
+	else
+		this->removeOperator(arg);
 }
 
 void Channel::setT(bool mode)
@@ -266,7 +276,13 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 		case 'o':
 		{
 			count++;
-			this->setO(true, params[count + 1]);
+			if (this->isOnChannel(params[count + 1]))
+				this->setO(true, params[count + 1]);
+			else
+			{
+				std::cout << "NOT ON CHANNEL" << std::endl;
+				return 1;
+			}
 			break;
 		}
 
@@ -278,8 +294,8 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 			{
 				if (limit[i] < '0' || limit[i] > '9')
 				{
-					std::cout << "NOT NUMBER" << std::endl; //tengo que retornar algo FUCKK
-					return 1;
+					std::cout << "NOT NUMBER" << std::endl; // tengo que retornar algo FUCKK
+					return 1;								// segun que num retorno tiro un error dif?
 				}
 			}
 			this->setL(true, params[count + 1]);

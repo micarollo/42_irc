@@ -37,6 +37,7 @@ public:
 	void removeInvited(std::string nickName);
 	void clearInvited();
 	void removeUser(std::string nickName);
+	void addOperator(std::string nickName);
 	void removeOperator(std::string nickName);
 	void setTopic(std::string topic);
 	void setUserLimit(std::string limit);
