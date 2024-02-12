@@ -1,0 +1,8 @@
+- when failing to accept new client connection should shut down all the program?
+- protect close
+
+- client hostname
+
+PART
+
+- check if message is correct? should it be nickname or hostname?
