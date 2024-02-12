@@ -54,7 +54,6 @@
 # define ERR_NOSUCHNICK(client, nickname) (std::string("401 ") + client + " " + nickname + " :No suck nick/channel")
 # define ERR_NOTEXTTOSEND(client) (std::string("412 ") + client + " :No text to send")
 # define ERR_NORECIPIENT(client, command) (std::string("411 ") + client + " :No recipient given " + command)
-# define ERR_CANNOTSENDTOCHAN(client, channel) (std::string("404 ") + client +  " " + channel + ": Cannot send to channel")
 
 // INVITE
 # define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " +  channel + " :No such channel")
