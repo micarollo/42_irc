@@ -6,66 +6,66 @@ static unsigned int countArguments(std::map<std::string, std::string> &modes);
 void Executor::mode()
 {
     std::map<std::string, Channel *> channels = _srv->getChannels();
+    Client * cl =  _cmd->getClientExec();
 
-    if (_cmd->getClientExec()->getStatus() == REGISTERED)
+    if (cl->getStatus() == REGISTERED)
     {
         if (channels[_cmd->getParams()[0]])
         {
             if (_cmd->getParams().size() == 1 || (_cmd->getParams()[1][0] != '+' && _cmd->getParams()[1][0] != '-'))
             {
                 std::string modes = channels[_cmd->getParams()[0]]->getModes();
-                _cmd->getClientExec()->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), "", modes, ""));
-                _cmd->getClientExec()->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
+                cl->sendMsg(RPL_CHANNELMODEIS(cl->getUserName(), channels[_cmd->getParams()[0]]->getName(), "", modes, ""));
+                cl->sendMsg(RPL_CREATIONTIME(cl->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
                 return;
             }
-            if (channels[_cmd->getParams()[0]]->isOperator(_cmd->getClientExec()->getNickName()))
+            if (channels[_cmd->getParams()[0]]->isOperator(cl->getNickName()))
             {
-                std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1], _cmd->getClientExec());
+                std::map<std::string, std::string> modes = checkModes(_cmd->getParams()[1], cl);
                 unsigned int count = countArguments(modes);
                 if ((count > 0) && (count + 2 != _cmd->getParams().size()))
                 {
-                    _cmd->getClientExec()->sendMsg(ERR_NEEDMOREPARAMS(_cmd->getClientExec()->getUserName(), _cmd->getCommandStr()));
+                    cl->sendMsg(ERR_NEEDMOREPARAMS(cl->getUserName(), _cmd->getCommandStr()));
                     return;
                 }
                 if (modes["+"].size() > 0)
                 {
                     int res = channels[_cmd->getParams()[0]]->addModes(modes["+"], _cmd->getParams());
                     if (res)
-                        // std::cout << "NO MANDO EL MENSAJE" << std::endl; //que error saco?
                     {
                         if (res == 1)
-                            _cmd->getClientExec()->sendMsg("Limit must be a number");
+                            cl->sendMsg("Limit must be a number");
                         if (res == 2)
-                            _cmd->getClientExec()->sendMsg(ERR_NOTONCHANNEL(_cmd->getClientExec()->getUserName(), _cmd->getParams()[0])); // acerca del que quiere agregar..
+                            cl->sendMsg(ERR_NOTONCHANNEL(cl->getUserName(), _cmd->getParams()[0]));
                     }
                     else
                     {
-                        channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
-                        channels[_cmd->getParams()[0]]->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), "+", modes["+"], ""));
+                        channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(cl->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
+                        channels[_cmd->getParams()[0]]->sendMsg(RPL_CHANNELMODEIS(cl->getUserName(), channels[_cmd->getParams()[0]]->getName(), "+", modes["+"], ""));
                     }
                 }
                 if (modes["-"].size() > 0)
                 {
                     channels[_cmd->getParams()[0]]->removeModes(modes["-"], _cmd->getParams());
-                    channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
-                    channels[_cmd->getParams()[0]]->sendMsg(RPL_CHANNELMODEIS(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName(), "-", modes["-"], ""));
+                    channels[_cmd->getParams()[0]]->sendMsg(RPL_CREATIONTIME(cl->getUserName(), channels[_cmd->getParams()[0]]->getName(), getCurrentTime()));
+                    channels[_cmd->getParams()[0]]->sendMsg(RPL_CHANNELMODEIS(cl->getUserName(), channels[_cmd->getParams()[0]]->getName(), "-", modes["-"], ""));
                 }
             }
             else
             {
-                _cmd->getClientExec()->sendMsg(ERR_CHANOPRIVSNEEDED(_cmd->getClientExec()->getUserName(), channels[_cmd->getParams()[0]]->getName()));
+                cl->sendMsg(ERR_CHANOPRIVSNEEDED(cl->getUserName(), channels[_cmd->getParams()[0]]->getName()));
                 return;
             }
         }
         else
         {
-            _cmd->getClientExec()->sendMsg(ERR_NOSUCHCHANNEL(_cmd->getClientExec()->getUserName(), _cmd->getParams()[0]));
+            cl->sendMsg(ERR_NOSUCHCHANNEL(cl->getUserName(), _cmd->getParams()[0]));
             return;
         }
     }
     else
     {
-        _cmd->getClientExec()->sendMsg(ERR_NOTREGISTERED(_cmd->getClientExec()->getUserName()));
+        cl->sendMsg(ERR_NOTREGISTERED(cl->getUserName()));
         return;
     }
 }
@@ -77,6 +77,7 @@ static std::map<std::string, std::string> checkModes(std::string s, Client * cl)
     mod["+"] = "";
     mod["-"] = "";
     std::string msg = "MODE not implemented: ";
+    bool flag = false;
     for (unsigned long i = 0; i < s.length(); ++i)
     {
         if (s[i] == '+' || s[i] == '-')
@@ -102,11 +103,15 @@ static std::map<std::string, std::string> checkModes(std::string s, Client * cl)
                     }
                 }
                 else
+                {
                     msg += s[i];
+                    flag = true;
+                }
             }
             --i;
         }
-        cl->sendMsg(msg);
+        if (flag)
+            cl->sendMsg(msg);
     }
     return mod;
 }
@@ -120,9 +125,7 @@ static unsigned int countArguments(std::map<std::string, std::string> &modes)
         char c = modes["+"][i];
 
         if (c == 'k' || c == 'o' || c == 'l')
-        {
             ++count;
-        }
     }
 
     for (std::size_t i = 0; i < modes["-"].length(); ++i)
@@ -130,9 +133,7 @@ static unsigned int countArguments(std::map<std::string, std::string> &modes)
         char c = modes["-"][i];
 
         if (c == 'o')
-        {
             ++count;
-        }
     }
 
     return count;
