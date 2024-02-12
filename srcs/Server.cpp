@@ -197,55 +197,45 @@ void Server::processNewMessages(void)
 	{
 		if (it->revents == 0)
 			continue;
+		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI)){
+			processOneMessage(it->fd);
+		}
 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
 			_fdsToDel.push_back(it->fd);
-		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
-			processOneMessage(it->fd);
-		else
-		{
-		}
 	}
 
 	deleteFds();
-
 	return;
 }
 
 void Server::processOneMessage(int clientFd)
 {
-	std::string oneMsg = readOneMessage(clientFd);
-	if (oneMsg != "")
-		processCommands(oneMsg, clientFd);
-
-	return;
-}
-
-std::string Server::readOneMessage(int clientFd)
-{
 	char buff[BUFFER_SIZE];
 	memset(buff, 0, BUFFER_SIZE);
 	char delimeter[3] = "\r\n";
 
-	std::string newLine = "";
-	size_t newLineLastTwoCharIndex = 0;
-
-	while (newLine.find(delimeter, newLineLastTwoCharIndex) == std::string::npos)
+	// Read from poll
+	int nRet = recv(clientFd, buff, BUFFER_SIZE - 1, 0);
+	if (nRet <= 0)
 	{
-		int nRet = recv(clientFd, buff, BUFFER_SIZE - 1, 0);
-		if (nRet < 0)
-		{
-			_fdsToDel.push_back(clientFd);
-			return "";
-		}
-		else
-		{
-			buff[BUFFER_SIZE - 1] = 0;
-			newLine += std::string(buff);
-			if (newLine.length() >= strlen(delimeter))
-				newLineLastTwoCharIndex = newLine.length() - strlen(delimeter);
-		}
+		_fdsToDel.push_back(clientFd);
+		return ;
 	}
-	return newLine;
+	buff[nRet] = '\0';
+
+	// Save in server
+	_srvBuff[clientFd] += buff;
+
+	while (_srvBuff[clientFd].find(delimeter) != std::string::npos)
+	{
+		// Execute Command
+		std::string oneMsg = _srvBuff[clientFd].substr(0, _srvBuff[clientFd].find(delimeter));
+		processCommands(oneMsg, clientFd);
+
+		_srvBuff[clientFd] = _srvBuff[clientFd].substr(_srvBuff[clientFd].find(delimeter) + 2);
+	}
+	
+	return;
 }
 
 void Server::processCommands(std::string oneMsg, int clientFd)
@@ -258,12 +248,10 @@ void Server::processCommands(std::string oneMsg, int clientFd)
 	{
 		try
 		{
-			// tmp
 			std::cout << command << std::endl;
 
 			Command cmd(command, _clients[clientFd]);
 
-			// tmp
 			executeOneCommand(cmd);
 		}
 		catch (const std::exception &e)
@@ -338,7 +326,6 @@ void Server::executeOneCommand(Command &cmd)
 	}
 	default:
 	{
-		// tmp
 		cmd.getClientExec()->sendMsg("Command <" + cmd.getCommandStr() + "> not implemented");
 	}
 	}
@@ -378,6 +365,7 @@ void Server::disconnectOneClient(int clientFd)
 		if (it->fd == clientFd)
 		{
 			_fds.erase(it);
+			_srvBuff[clientFd].erase();
 			break;
 		}
 	}
