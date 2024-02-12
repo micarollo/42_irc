@@ -66,7 +66,7 @@ static void addNewChannel(Server *srv, std::vector<std::string>::iterator it, Cl
 	std::cout << "Create new channel " << newChannel->getName() << std::endl;
 }
 
-static bool parseChannelsAndKeys(const std::vector<std::string> &params, std::vector<std::string> &channels, std::vector<std::string> &keys, Client *client)
+static bool parseChannelsAndKeys(const std::vector<std::string> &params, std::vector<std::string> &channels, std::vector<std::string> &keys, Client *client, std::string commandStr)
 {
 	Executor::parseCommas(params[0], channels);
 	if (params.size() == 2)
@@ -74,7 +74,7 @@ static bool parseChannelsAndKeys(const std::vector<std::string> &params, std::ve
 
 	if (keys.size() > channels.size())
 	{
-		client->sendMsg(ERR_NEEDMOREPARAMS("", client->getNickName()));
+		client->sendMsg(ERR_NEEDMOREPARAMS(client->getUserName(), commandStr));
 		return false;
 	}
 
@@ -160,7 +160,7 @@ void Executor::join()
 
 	std::vector<std::string> channels;
 	std::vector<std::string> keys;
-	if (!parseChannelsAndKeys(_cmd->getParams(), channels, keys, _cmd->getClientExec()))
+	if (!parseChannelsAndKeys(_cmd->getParams(), channels, keys, _cmd->getClientExec(), _cmd->getCommandStr()))
 		return;
 
 	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
