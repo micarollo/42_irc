@@ -85,6 +85,7 @@ private:
 	int _srvSocket;
 	std::vector<struct pollfd> _fds;
 	std::vector<int> _fdsToDel;
+	std::map<int, std::string> _srvBuff;
 
 	std::map<int, Client *> _clients;
 	std::map<std::string, Channel *> _channels;
