@@ -77,6 +77,7 @@ static std::map<std::string, std::string> checkModes(std::string s, Client * cl)
     mod["+"] = "";
     mod["-"] = "";
     std::string msg = "MODE not implemented: ";
+    bool flag = false;
     for (unsigned long i = 0; i < s.length(); ++i)
     {
         if (s[i] == '+' || s[i] == '-')
@@ -102,11 +103,15 @@ static std::map<std::string, std::string> checkModes(std::string s, Client * cl)
                     }
                 }
                 else
+                {
                     msg += s[i];
+                    flag = true;
+                }
             }
             --i;
         }
-        cl->sendMsg(msg);
+        if (flag)
+            cl->sendMsg(msg);
     }
     return mod;
 }

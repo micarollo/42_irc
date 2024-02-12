@@ -52,10 +52,14 @@ void Executor::chanMsg(std::string &chan, Client const *client, std::string cons
 		{
 			if (it->second->isOnChannel(client->getNickName()))
 			{
-				// ERR_CANNOTSENDTOCHAN falta este error con MODES
-				std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + chan + " " + msg;
-				// send msg to all clients in that chan
-				it->second->sendMessage(client, newMsg);
+				if (it->second->getO() && !it->second->isOperator(client->getNickName()))
+					_cmd->getClientExec()->sendMsg(ERR_CANNOTSENDTOCHAN(_cmd->getClientExec()->getUserName(), chan));
+				else
+				{
+					std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + chan + " " + msg;
+					// send msg to all clients in that chan
+					it->second->sendMessage(client, newMsg);
+				}
 			}
 			else
 			{
