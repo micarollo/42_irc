@@ -3,6 +3,7 @@
 
 // Libraries
 #include <sstream>
+#include <ctime>
 
 // Classes
 #include "Server.hpp"
