@@ -84,9 +84,10 @@
 #define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")
 
 // MODES
-# define RPL_CHANNELMODEIS(client, channel, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + modestring + " " + arguments)
+# define RPL_CHANNELMODEIS(client, channel, sign, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + sign + modestring + " " + arguments)
 # define RPL_CREATIONTIME(client, channel, creationtime) (std::string("329 ") + client + " " + channel + " " + creationtime)
 # define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
+# define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
 
 // TOPIC
 # define RPL_TOPICWHOTIME(client, channel, nick, setat) (std::string("333 ") + client + " " + channel + " " + nick + " " + setat)
