@@ -21,7 +21,6 @@ void Executor::privmsg()
 	args = splitArgs(_cmd->getParams()[0]);
 	for (size_t i = 0; i < args.size(); ++i)
 	{
-		// std::cout << args[i] << std::endl;
 		if (args[i][0] == '#' || args[i][0] == '&')
 			chanMsg(args[i], _cmd->getClientExec(), _cmd->getParams().back());
 		else
@@ -42,7 +41,7 @@ static std::vector<std::string> splitArgs(std::string const &param)
 	return args;
 }
 
-void Executor::chanMsg(std::string &chan, Client const *client, std::string const &msg)
+void Executor::chanMsg(std::string &chan, Client *client, std::string const &msg)
 {
 	std::map<std::string, Channel *> channels = _srv->getChannels();
 
@@ -50,10 +49,13 @@ void Executor::chanMsg(std::string &chan, Client const *client, std::string cons
 	{
 		if (it->second->getName() == chan)
 		{
-			// ERR_CANNOTSENDTOCHAN falta este error con MODES
-			std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + chan + " " + msg;
-			// send msg to all clients in that chan
-			it->second->sendMessage(client, newMsg);
+			if (it->second->isOnChannel(client->getNickName()))
+			{
+				std::string newMsg = ":" + _cmd->getClientExec()->getNickName() + " PRIVMSG " + chan + " " + msg;
+				it->second->sendMessage(client, newMsg);
+			}
+			else
+				client->sendMsg(ERR_NOTONCHANNEL(client->getUserName(), chan));
 		}
 	}
 }

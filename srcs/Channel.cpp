@@ -150,6 +150,13 @@ void Channel::removeUser(std::string nickName)
 	return;
 }
 
+void Channel::addOperator(std::string nickName)
+{
+	std::map<std::string, Client *>::iterator userIt = _users.find(nickName);
+	_operators[nickName] = userIt->second;
+	return;
+}
+
 void Channel::removeOperator(std::string nickName)
 {
 	if (_operators.find(nickName) != _users.end())
@@ -165,24 +172,49 @@ void Channel::setTopic(std::string topic)
 		_topic = topic;
 }
 
+void Channel::setUserLimit(std::string limit)
+{
+	size_t res = 0;
+
+	for (std::size_t i = 0; i < limit.length(); ++i)
+	{
+		if (limit[i] >= '0' && limit[i] <= '9')
+		{
+			res = res * 10 + (limit[i] - '0');
+		}
+	}
+	this->_userLimit = res;
+}
+
+void Channel::setKey(std::string key)
+{
+	this->_key = key;
+}
+
 void Channel::setI(bool mode)
 {
 	this->_i = mode;
 }
 
-void Channel::setK(bool mode)
+void Channel::setK(bool mode, std::string arg)
 {
 	this->_k = mode;
+	this->setKey(arg);
 }
 
-void Channel::setL(bool mode)
+void Channel::setL(bool mode, std::string arg)
 {
 	this->_l = mode;
+	this->setUserLimit(arg);
 }
 
-void Channel::setO(bool mode)
+void Channel::setO(bool mode, std::string arg)
 {
 	this->_o = mode;
+	if (mode == true)
+		this->addOperator(arg);
+	else
+		this->removeOperator(arg);
 }
 
 void Channel::setT(bool mode)
@@ -214,8 +246,10 @@ void Channel::sendMessage(Client const *client, std::string const &msg)
 	}
 }
 
-void Channel::addModes(std::string modes)
+int Channel::addModes(std::string modes, std::vector<std::string> params)
 {
+	int count = 0;
+
 	for (unsigned int i = 0; i < modes.length(); i++)
 	{
 		switch (modes[i])
@@ -234,19 +268,37 @@ void Channel::addModes(std::string modes)
 
 		case 'k':
 		{
-			this->setK(true);
+			count++;
+			this->setK(true, params[count + 1]);
 			break;
 		}
 
 		case 'o':
 		{
-			this->setO(true);
+			count++;
+			if (this->isOnChannel(params[count + 1]))
+				this->setO(true, params[count + 1]);
+			else
+			{
+				// std::cout << "NOT ON CHANNEL" << std::endl;
+				return 2;
+			}
 			break;
 		}
 
 		case 'l':
 		{
-			this->setL(true);
+			count++;
+			std::string limit = params[count + 1];
+			for (std::size_t i = 0; i < limit.length(); ++i)
+			{
+				if (limit[i] < '0' || limit[i] > '9')
+				{
+					// std::cout << "NOT NUMBER" << std::endl; // tengo que retornar algo FUCKK
+					return 1;								// segun que num retorno tiro un error dif?
+				}
+			}
+			this->setL(true, params[count + 1]);
 			break;
 		}
 
@@ -254,9 +306,10 @@ void Channel::addModes(std::string modes)
 			break;
 		}
 	}
+	return 0;
 }
 
-void Channel::removeModes(std::string modes)
+void Channel::removeModes(std::string modes, std::vector<std::string> params)
 {
 	for (unsigned int i = 0; i < modes.length(); i++)
 	{
@@ -277,19 +330,19 @@ void Channel::removeModes(std::string modes)
 
 		case 'k':
 		{
-			this->setK(false);
+			this->setK(false, "");
 			break;
 		}
 
 		case 'o':
 		{
-			this->setO(false);
+			this->setO(false, params[2]);
 			break;
 		}
 
 		case 'l':
 		{
-			this->setL(false);
+			this->setL(false, "");
 			break;
 		}
 

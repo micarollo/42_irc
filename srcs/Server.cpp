@@ -438,6 +438,13 @@ Channel *Server::searchChannel(std::string const &name)
 	return nullptr;
 }
 
+bool Server::existChannel(std::string const &name)
+{
+	if (_channels[name])
+		return true;
+	return false;
+}
+
 void Server::updateChNickName(std::string oldNickName, std::string newNickName)
 {
 	std::map<std::string, Channel *> ch = _channels;
