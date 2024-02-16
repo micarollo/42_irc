@@ -23,7 +23,6 @@ void Executor::user()
 				if (_cmd->getClientExec()->getPassword() == _srv->getPass())
 				{
 					_cmd->getClientExec()->setStatus(REGISTERED);
-					// RPL_WELCOME
 					_cmd->getClientExec()->sendMsg(RPL_WELCOME(_cmd->getClientExec()->getUserName(), "network", _cmd->getClientExec()->getNickName()));
 					_cmd->getClientExec()->sendMsg(RPL_YOURHOST(_cmd->getClientExec()->getUserName(), _srv->getName()));
 					_cmd->getClientExec()->sendMsg(RPL_MYINFO(_cmd->getClientExec()->getUserName(), _srv->getName()));

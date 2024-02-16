@@ -90,10 +90,7 @@ void Command::parseCommand(std::string const &msg)
 		}
 	}
 	if (!tmp.empty())
-	{
-		// tmp = tmp.substr(1);
 		_params.push_back(tmp);
-	}
 	return;
 }
 

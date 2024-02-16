@@ -240,7 +240,6 @@ void Channel::sendMessage(Client const *client, std::string const &msg)
 
 	for (std::map<std::string, Client *>::iterator it = users.begin(); it != users.end(); it++)
 	{
-		// it->second->sendMsg(msg);
 		tmp = it->second;
 		if (tmp->getNickName() != client->getNickName())
 			tmp->sendMsg(msg);
@@ -280,10 +279,7 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 			if (this->isOnChannel(params[count + 1]))
 				this->setO(true, params[count + 1]);
 			else
-			{
-				// std::cout << "NOT ON CHANNEL" << std::endl;
 				return 2;
-			}
 			break;
 		}
 
@@ -294,10 +290,7 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 			for (std::size_t i = 0; i < limit.length(); ++i)
 			{
 				if (limit[i] < '0' || limit[i] > '9')
-				{
-					// std::cout << "NOT NUMBER" << std::endl; // tengo que retornar algo FUCKK
-					return 1;								// segun que num retorno tiro un error dif?
-				}
+					return 1;
 			}
 			this->setL(true, params[count + 1]);
 			break;

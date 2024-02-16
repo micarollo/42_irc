@@ -20,7 +20,6 @@ void Executor::nick()
 		_cmd->getClientExec()->sendMsg(ERR_NICKNAMEINUSE(_cmd->getClientExec()->getUserName(), _cmd->getClientExec()->getNickName()));
 		return;
 	}
-	// SET NICKNAME
 	if (_cmd->getClientExec()->getStatus() == REGISTERED)
 	{
 		oldNickName = _cmd->getClientExec()->getNickName();
@@ -36,7 +35,6 @@ void Executor::nick()
 			if (_cmd->getClientExec()->getPassword() == _srv->getPass())
 			{
 				_cmd->getClientExec()->setStatus(REGISTERED);
-				// RPL_WELCOME
 				_cmd->getClientExec()->sendMsg(RPL_WELCOME(_cmd->getClientExec()->getUserName(), "network", _cmd->getClientExec()->getNickName()));
 				_cmd->getClientExec()->sendMsg(RPL_YOURHOST(_cmd->getClientExec()->getUserName(), _srv->getName()));
 				_cmd->getClientExec()->sendMsg(RPL_MYINFO(_cmd->getClientExec()->getUserName(), _srv->getName()));
