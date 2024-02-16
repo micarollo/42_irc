@@ -83,7 +83,7 @@ static std::map<std::string, std::string> checkModes(std::string s, Client * cl)
         if (s[i] == '+' || s[i] == '-')
         {
             std::string currentMode = s.substr(i, 1);
-            while (++i < s.length())
+            while (++i < s.length() && (s[i] != '-' && s[i] != '+'))
             {
                 if (std::string("itkol").find(s[i]) != std::string::npos)
                 {
@@ -110,9 +110,9 @@ static std::map<std::string, std::string> checkModes(std::string s, Client * cl)
             }
             --i;
         }
-        if (flag)
-            cl->sendMsg(msg);
     }
+    if (flag)
+        cl->sendMsg(msg);
     return mod;
 }
 
