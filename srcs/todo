@@ -1,8 +1,7 @@
-- when failing to accept new client connection should shut down all the program?
-- protect close
-
-- client hostname
-
-PART
-
-- check if message is correct? should it be nickname or hostname?
+- pong
+- Stop a client (^-Z) connected on a channel. Then flood the channel using
+		another client. The server should not hang. When the client is live again,
+		all stored commands should be processed normally. Also, check for memory
+		leaks during this operation.
+- set topic
+- TOPIC check working
