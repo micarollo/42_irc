@@ -121,6 +121,8 @@ int Command::checkCommand(std::string const &token)
 		return MODE;
 	else if (token == "PART")
 		return PART;
+	else if (token == "PING")
+		return PING;
 	else
 		return 0;
 }

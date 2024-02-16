@@ -33,6 +33,7 @@ public:
 	void topic();
 	void mode();
 	void part();
+	void ping();
 
 	// Mehtods
 	bool isNickUsed(std::string nickName);

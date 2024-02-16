@@ -22,7 +22,8 @@ SRCS				= main.cpp\
 						commands/kick.cpp\
 						commands/cap.cpp\
 						commands/mode.cpp\
-						commands/topic.cpp
+						commands/topic.cpp\
+						commands/ping.cpp
 
 MK					= Makefile
 

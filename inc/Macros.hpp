@@ -16,6 +16,7 @@
 #define TOPIC 9
 #define MODE 10
 #define PART 11
+#define PING 11
 
 // Connection configurations
 #define MAX_NB_CLIENTS 4
@@ -31,34 +32,34 @@
 // SERVER SETUP
 #define ERR_SERVERFULL(srv) (":" + srv->getName() + " 403 " + " * :Server is full - try again later")
 
-//RPL_MSG
-# define RPL_WELCOME(client, networkname, nick) (std::string("001 ") + client + " :Welcome to the " + networkname + " Network, " + nick)
-# define RPL_YOURHOST(client, servername) (std::string("002 ") + client + " :Your host is " + servername + ", running version 3.0")
-# define RPL_CREATED(client, datetime) (std::string("003 ") + client + " :This server was created " + datetime)
-# define RPL_MYINFO(client, servername) (std::string("004 ") + client + " " + servername +  " version 3.0")
+// RPL_MSG
+#define RPL_WELCOME(client, networkname, nick) (std::string("001 ") + client + " :Welcome to the " + networkname + " Network, " + nick)
+#define RPL_YOURHOST(client, servername) (std::string("002 ") + client + " :Your host is " + servername + ", running version 3.0")
+#define RPL_CREATED(client, datetime) (std::string("003 ") + client + " :This server was created " + datetime)
+#define RPL_MYINFO(client, servername) (std::string("004 ") + client + " " + servername + " version 3.0")
 
-//ERR PASSWORD
-# define ERR_PASSWDMISMATCH(client) (std::string("464 ") + client + " :Password incorrect")
+// ERR PASSWORD
+#define ERR_PASSWDMISMATCH(client) (std::string("464 ") + client + " :Password incorrect")
 
-//ERR NICK
-# define ERR_NONICKNAMEGIVEN(client) (std::string("431 ") + client + " :No nickname given")
-# define ERR_ERRONEUSNICKNAME(client, nickname) (std::string("432 ") + client + " " +  nickname + " :Erroneus nickname")
-# define ERR_NICKNAMEINUSE(client, nickname) (std::string("433 ") + client + " " + nickname + " :Nickname is already in use")
-# define ERR_NICKCOLLISION(client, nickname, user, host) (std::string("436 ") + client + " " +  nickname + " :Nickname collision KILL from " + user + "@" + host)
+// ERR NICK
+#define ERR_NONICKNAMEGIVEN(client) (std::string("431 ") + client + " :No nickname given")
+#define ERR_ERRONEUSNICKNAME(client, nickname) (std::string("432 ") + client + " " + nickname + " :Erroneus nickname")
+#define ERR_NICKNAMEINUSE(client, nickname) (std::string("433 ") + client + " " + nickname + " :Nickname is already in use")
+#define ERR_NICKCOLLISION(client, nickname, user, host) (std::string("436 ") + client + " " + nickname + " :Nickname collision KILL from " + user + "@" + host)
 
-//ERR USER
-# define ERR_NEEDMOREPARAMS(client, command) (std::string("461 ") + client + " " + command + std::string(" :Not enough parameters"))
-# define ERR_ALREADYREGISTERED(client) (std::string("462 ") + client + " :You may not reregister")
+// ERR USER
+#define ERR_NEEDMOREPARAMS(client, command) (std::string("461 ") + client + " " + command + std::string(" :Not enough parameters"))
+#define ERR_ALREADYREGISTERED(client) (std::string("462 ") + client + " :You may not reregister")
 
-//PRIVMSG
-# define ERR_NOSUCHNICK(client, nickname) (std::string("401 ") + client + " " + nickname + " :No suck nick/channel")
-# define ERR_NOTEXTTOSEND(client) (std::string("412 ") + client + " :No text to send")
-# define ERR_NORECIPIENT(client, command) (std::string("411 ") + client + " :No recipient given " + command)
+// PRIVMSG
+#define ERR_NOSUCHNICK(client, nickname) (std::string("401 ") + client + " " + nickname + " :No suck nick/channel")
+#define ERR_NOTEXTTOSEND(client) (std::string("412 ") + client + " :No text to send")
+#define ERR_NORECIPIENT(client, command) (std::string("411 ") + client + " :No recipient given " + command)
 
 // INVITE
-# define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " +  channel + " :No such channel")
-# define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " +  channel + " :You're not on that channel")
-# define RPL_INVITING(client, nickname, channel) (std::string("341 ") + client + " " + nickname + " " + channel)
+#define ERR_NOSUCHCHANNEL(client, channel) (std::string("403 ") + client + " " + channel + " :No such channel")
+#define ERR_NOTONCHANNEL(client, channel) (std::string("442 ") + client + " " + channel + " :You're not on that channel")
+#define RPL_INVITING(client, nickname, channel) (std::string("341 ") + client + " " + nickname + " " + channel)
 
 // JOIN
 #define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
@@ -83,12 +84,15 @@
 // CAP
 #define CAP_NOT_SUPP(serverName, client) (":" + serverName + " CAP " + client + " LS :")
 
+// PONG
+#define PONG(args) ("PONG" + " " + args)
+
 // MODES
-# define RPL_CHANNELMODEIS(client, channel, sign, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + sign + modestring + " " + arguments)
-# define RPL_CREATIONTIME(client, channel, creationtime) (std::string("329 ") + client + " " + channel + " " + creationtime)
-# define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
-# define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
+#define RPL_CHANNELMODEIS(client, channel, sign, modestring, arguments) (std::string("324 ") + client + " " + channel + " " + sign + modestring + " " + arguments)
+#define RPL_CREATIONTIME(client, channel, creationtime) (std::string("329 ") + client + " " + channel + " " + creationtime)
+#define ERR_CHANOPRIVSNEEDED(client, channel) (std::string("482 ") + client + " " + channel + " :You're not channel operator")
+#define ERR_NOTREGISTERED(client) (std::string("451 ") + client + " :You have not registered")
 
 // TOPIC
-# define RPL_TOPICWHOTIME(client, channel, nick, setat) (std::string("333 ") + client + " " + channel + " " + nick + " " + setat)
-# define RPL_NOTOPIC(client, channel) (std::string("331 ") + client + " " + channel + " :No topic is set")
+#define RPL_TOPICWHOTIME(client, channel, nick, setat) (std::string("333 ") + client + " " + channel + " " + nick + " " + setat)
+#define RPL_NOTOPIC(client, channel) (std::string("331 ") + client + " " + channel + " :No topic is set")
