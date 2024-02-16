@@ -217,9 +217,10 @@ void Channel::setO(bool mode, std::string arg)
 		this->removeOperator(arg);
 }
 
-void Channel::setT(bool mode)
+void Channel::setT(bool mode, std::string topic)
 {
 	this->_t = mode;
+	this->_topic = topic;
 }
 
 // Methods
@@ -262,7 +263,7 @@ int Channel::addModes(std::string modes, std::vector<std::string> params)
 
 		case 't':
 		{
-			this->setT(true);
+			this->setT(true, params[2]);
 			break;
 		}
 
@@ -324,7 +325,7 @@ void Channel::removeModes(std::string modes, std::vector<std::string> params)
 
 		case 't':
 		{
-			this->setT(false);
+			this->setT(false, "");
 			break;
 		}
 
