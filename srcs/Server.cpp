@@ -197,7 +197,8 @@ void Server::processNewMessages(void)
 	{
 		if (it->revents == 0)
 			continue;
-		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI)){
+		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+		{
 			processOneMessage(it->fd);
 		}
 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
@@ -207,6 +208,24 @@ void Server::processNewMessages(void)
 	deleteFds();
 	return;
 }
+
+// void Server::processNewMessages(void)
+// {
+// 	std::vector<struct pollfd>::iterator it = _fds.begin();
+// 	++it;
+
+// 	for (; it != _fds.end(); ++it)
+// 	{
+// 		if (it->revents == 0)
+// 			continue;
+// 		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+// 			processOneMessage(it->fd);
+// 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
+// 			_fdsToDel.push_back(it->fd);
+// 	}
+// 	deleteFds();
+// 	return;
+// }
 
 void Server::processOneMessage(int clientFd)
 {
@@ -219,7 +238,7 @@ void Server::processOneMessage(int clientFd)
 	if (nRet <= 0)
 	{
 		_fdsToDel.push_back(clientFd);
-		return ;
+		return;
 	}
 	buff[nRet] = '\0';
 
@@ -234,7 +253,7 @@ void Server::processOneMessage(int clientFd)
 
 		_srvBuff[clientFd] = _srvBuff[clientFd].substr(_srvBuff[clientFd].find(delimeter) + 2);
 	}
-	
+
 	return;
 }
 
