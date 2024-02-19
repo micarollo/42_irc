@@ -435,7 +435,7 @@ Channel *Server::searchChannel(std::string const &name)
 {
 	if (_channels[name])
 		return _channels[name];
-	return nullptr;
+	return NULL;
 }
 
 bool Server::existChannel(std::string const &name)

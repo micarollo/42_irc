@@ -62,7 +62,7 @@ void Executor::parseCommas(std::string param, std::vector<std::string> &vector)
 
 std::string Executor::getCurrentTime()
 {
-	std::time_t now = std::time(nullptr);
+	std::time_t now = std::time(NULL);
 	char buffer[80];
 	std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
 	return std::string(buffer);
