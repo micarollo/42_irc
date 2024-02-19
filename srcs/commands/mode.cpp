@@ -124,7 +124,7 @@ static unsigned int countArguments(std::map<std::string, std::string> &modes)
     {
         char c = modes["+"][i];
 
-        if (c == 'k' || c == 'o' || c == 'l')
+        if (c == 'k' || c == 'o' || c == 'l' || c == 't')
             ++count;
     }
 
