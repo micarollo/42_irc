@@ -98,6 +98,13 @@ void Server::openSocket(void)
 	ErrorHandling::checkErrorPrintSuccess(nRet, "Could not make server socket non-blocking", "Successfully made socket non-blocking");
 }
 
+static std::string intToString(int value)
+{
+	std::ostringstream o;
+	o << value;
+	return o.str();
+}
+
 void Server::bindAndListen(void)
 {
 	struct sockaddr_in srvAddr;
@@ -108,10 +115,10 @@ void Server::bindAndListen(void)
 	memset(&srvAddr.sin_zero, 0, 0);
 
 	int nRet = bind(_srvSocket, (sockaddr *)&srvAddr, sizeof(sockaddr));
-	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to bind", "Successfully bind to local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to bind", "Successfully bind to local port " + intToString(_port));
 
 	nRet = listen(_srvSocket, MAX_NB_CLIENTS);
-	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + intToString(_port));
 }
 
 void Server::preparePoll(void)
