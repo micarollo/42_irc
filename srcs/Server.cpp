@@ -98,6 +98,13 @@ void Server::openSocket(void)
 	ErrorHandling::checkErrorPrintSuccess(nRet, "Could not make server socket non-blocking", "Successfully made socket non-blocking");
 }
 
+static std::string intToString(int value)
+{
+	std::ostringstream o;
+	o << value;
+	return o.str();
+}
+
 void Server::bindAndListen(void)
 {
 	struct sockaddr_in srvAddr;
@@ -108,10 +115,10 @@ void Server::bindAndListen(void)
 	memset(&srvAddr.sin_zero, 0, 0);
 
 	int nRet = bind(_srvSocket, (sockaddr *)&srvAddr, sizeof(sockaddr));
-	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to bind", "Successfully bind to local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to bind", "Successfully bind to local port " + intToString(_port));
 
 	nRet = listen(_srvSocket, MAX_NB_CLIENTS);
-	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + std::to_string(_port));
+	ErrorHandling::checkErrorPrintSuccess(nRet, "Failed to listen", "Successfully listen at local port " + intToString(_port));
 }
 
 void Server::preparePoll(void)
@@ -190,20 +197,39 @@ struct pollfd Server::addFdToPoll(int fd)
 	return poll;
 }
 
+// void Server::processNewMessages(void)
+// {
+
+// 	for (std::vector<struct pollfd>::iterator it = std::next(_fds.begin()); it != _fds.end(); it++)
+// 	{
+// 		if (it->revents == 0)
+// 			continue;
+// 		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+// 		{
+// 			processOneMessage(it->fd);
+// 		}
+// 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
+// 			_fdsToDel.push_back(it->fd);
+// 	}
+
+// 	deleteFds();
+// 	return;
+// }
+
 void Server::processNewMessages(void)
 {
+	std::vector<struct pollfd>::iterator it = _fds.begin();
+	++it;
 
-	for (std::vector<struct pollfd>::iterator it = std::next(_fds.begin()); it != _fds.end(); it++)
+	for (; it != _fds.end(); ++it)
 	{
 		if (it->revents == 0)
 			continue;
-		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI)){
+		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
 			processOneMessage(it->fd);
-		}
 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
 			_fdsToDel.push_back(it->fd);
 	}
-
 	deleteFds();
 	return;
 }
@@ -219,7 +245,7 @@ void Server::processOneMessage(int clientFd)
 	if (nRet <= 0)
 	{
 		_fdsToDel.push_back(clientFd);
-		return ;
+		return;
 	}
 	buff[nRet] = '\0';
 
@@ -234,7 +260,7 @@ void Server::processOneMessage(int clientFd)
 
 		_srvBuff[clientFd] = _srvBuff[clientFd].substr(_srvBuff[clientFd].find(delimeter) + 2);
 	}
-	
+
 	return;
 }
 
@@ -435,7 +461,7 @@ Channel *Server::searchChannel(std::string const &name)
 {
 	if (_channels[name])
 		return _channels[name];
-	return nullptr;
+	return NULL;
 }
 
 bool Server::existChannel(std::string const &name)

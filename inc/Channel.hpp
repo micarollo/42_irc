@@ -43,7 +43,7 @@ public:
 	void setUserLimit(std::string limit);
 	void setKey(std::string key);
 	void setI(bool mode);
-	void setT(bool mode);
+	void setT(bool mode, std::string topic);
 	void setK(bool mode, std::string arg);
 	void setO(bool mode, std::string arg);
 	void setL(bool mode, std::string arg);
