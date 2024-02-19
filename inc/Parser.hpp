@@ -4,6 +4,7 @@
 // Libraries
 #include <stdexcept>
 #include <cctype>
+#include <cstdlib>
 
 // Macros
 #include "Macros.hpp"
