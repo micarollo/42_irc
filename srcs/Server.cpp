@@ -197,42 +197,42 @@ struct pollfd Server::addFdToPoll(int fd)
 	return poll;
 }
 
-void Server::processNewMessages(void)
-{
-
-	for (std::vector<struct pollfd>::iterator it = std::next(_fds.begin()); it != _fds.end(); it++)
-	{
-		if (it->revents == 0)
-			continue;
-		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
-		{
-			processOneMessage(it->fd);
-		}
-		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
-			_fdsToDel.push_back(it->fd);
-	}
-
-	deleteFds();
-	return;
-}
-
 // void Server::processNewMessages(void)
 // {
-// 	std::vector<struct pollfd>::iterator it = _fds.begin();
-// 	++it;
 
-// 	for (; it != _fds.end(); ++it)
+// 	for (std::vector<struct pollfd>::iterator it = std::next(_fds.begin()); it != _fds.end(); it++)
 // 	{
 // 		if (it->revents == 0)
 // 			continue;
 // 		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+// 		{
 // 			processOneMessage(it->fd);
+// 		}
 // 		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
 // 			_fdsToDel.push_back(it->fd);
 // 	}
+
 // 	deleteFds();
 // 	return;
 // }
+
+void Server::processNewMessages(void)
+{
+	std::vector<struct pollfd>::iterator it = _fds.begin();
+	++it;
+
+	for (; it != _fds.end(); ++it)
+	{
+		if (it->revents == 0)
+			continue;
+		else if ((it->revents & POLLIN) || (it->revents & POLLRDNORM) || (it->revents & POLLRDBAND) || (it->revents & POLLPRI))
+			processOneMessage(it->fd);
+		else if ((it->revents & POLLERR) || (it->revents & POLLHUP) || (it->revents & POLLNVAL))
+			_fdsToDel.push_back(it->fd);
+	}
+	deleteFds();
+	return;
+}
 
 void Server::processOneMessage(int clientFd)
 {
