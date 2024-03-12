@@ -1,0 +1,1 @@
+ft_irc is a project where you'll build an IRC server in C++. The server should support multiple clients, allow for authentication, setting a nickname, a username, joining a channel, and sending/receiving private messages.
